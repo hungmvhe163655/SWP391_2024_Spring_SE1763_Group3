@@ -19,7 +19,7 @@ namespace Backend.Models
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public string PortraitPictureUrl { get; set; }
-        public ICollection<Apartment> Apartments { get; set; }
+        public ICollection<Building> Buildings { get; set; }
         public ICollection<Request> Requests { get; set; }
     }
 }

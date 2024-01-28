@@ -24,6 +24,8 @@ namespace Backend.Models
         public string Address { get; set; }
         // Store on Google Drive so will save url to database
         public string PortraitPictureUrl { get; set; }
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
         public ICollection<Bill> Bills { get; set; }
         public ICollection<Contract> Contracts { get; set; }
         public ICollection<Request> Requests { get; set; }

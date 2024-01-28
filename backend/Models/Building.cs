@@ -10,7 +10,7 @@
 #nullable disable
 namespace Backend.Models
 {
-    public class Apartment
+    public class Building
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -23,6 +23,6 @@ namespace Backend.Models
         public HouseManager HouseManager { get; set; }
         //Many relationship 
         public ICollection<Room> Rooms { get; set; }
-        public ICollection<ApartmentPicture> Pictures { get; set; }
+        public ICollection<BuildingService> BuildingServices { get; set; }
     }
 }

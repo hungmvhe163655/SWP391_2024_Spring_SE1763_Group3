@@ -13,6 +13,11 @@ namespace Backend.Models
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public ICollection<RoomService> RoomServices { get; set; }
+        public string Description { get; set; }
+        public bool IsDeleted { get; set; }
+        public int BillStatusId { get; set; }
+        public BillStatus BillStatus { get; set; }
+        public ICollection<BuildingService> BuildingServices { get; set; }
+        public ICollection<UtilityCost> UtilityCosts { get; set; }
     }
 }

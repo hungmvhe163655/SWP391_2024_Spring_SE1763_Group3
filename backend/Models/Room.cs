@@ -20,8 +20,9 @@ namespace Backend.Models
         public bool IsDeleted { get; set; }
         //One relationship 
         public int ApartmentId { get; set; }
-        public Apartment Apartment { get; set; }
+        public Building Apartment { get; set; }
         public ICollection<Contract> Contracts { get; set; }
-        public ICollection<RoomService> RoomServices { get; set; }
+        public ICollection<Bill> Bills { get; set; }    
+        public ICollection<Tenant> Tenant { get; set; }
     }
 }
