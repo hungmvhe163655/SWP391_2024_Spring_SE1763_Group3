@@ -13,9 +13,9 @@ namespace Backend.Models
 {
     public class Contract
     {
-        public int Id { get; set; }
-        public int TenantId { get; set; }
-        public int RoomId { get; set; }
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public Guid RoomId { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime ExpectedCheckOutDate { get; set; }
         public DateTime? RealCheckOutDate { get; set; }

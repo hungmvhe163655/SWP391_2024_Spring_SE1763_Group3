@@ -1,3 +1,5 @@
+using Backend.Utils;
+
 namespace Backend
 {
     public class Program
@@ -8,8 +10,11 @@ namespace Backend
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson();
+
+            builder.Services.AddDbContext<HomeManagementDbContext>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -25,7 +30,6 @@ namespace Backend
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

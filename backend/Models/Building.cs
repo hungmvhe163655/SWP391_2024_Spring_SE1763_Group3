@@ -19,10 +19,11 @@ namespace Backend.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        public int HouseManagerId { get; set; }
-        public HouseManager HouseManager { get; set; }
+        public Guid HomeManagerId { get; set; }
+        public HomeManager HomeManager { get; set; }
         //Many relationship 
         public ICollection<Room> Rooms { get; set; }
         public ICollection<BuildingService> BuildingServices { get; set; }
+        public ICollection<News> News { get; set; }
     }
 }
