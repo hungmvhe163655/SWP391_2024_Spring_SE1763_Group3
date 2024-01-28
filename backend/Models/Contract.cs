@@ -1,4 +1,9 @@
-﻿/**
+﻿
+
+#nullable disable
+using System.ComponentModel.DataAnnotations.Schema;
+
+/**
  * Class for Contract, this is use for entity framework to generate database.
  * This class is represent for a table in database. 
  * 
@@ -22,6 +27,7 @@ namespace Backend.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        [Column(TypeName = "money")]
         public decimal Deposit { get; set; }
         public Room Room { get; set; }
         public Tenant Tenant { get; set; }

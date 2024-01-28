@@ -1,4 +1,6 @@
-﻿namespace Backend.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Backend.Models
 {
     public class UtilityCostType
     {
@@ -6,6 +8,7 @@
         public string Name { get; set; }
         public string Units { get; set; }  
         public bool IsDeleted { get; set; }
+        [Column(TypeName = "money")]
         public decimal PricePerUnit { get; set; }
         public ICollection<UtilityCost> UtilityCosts { get; set; }
     }
