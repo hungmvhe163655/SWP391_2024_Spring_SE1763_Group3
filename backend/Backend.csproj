@@ -32,7 +32,6 @@
     <Folder Include="Services\ExternalServices\" />
     <Folder Include="Services\InternalServices\" />
     <Folder Include="Tests\" />
-    <Folder Include="Utils\Mapper\" />
   </ItemGroup>
 
   <ItemGroup>

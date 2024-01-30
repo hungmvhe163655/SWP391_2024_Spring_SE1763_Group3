@@ -12,8 +12,8 @@ namespace Backend
 
             builder.Services.AddControllers()
                 .AddNewtonsoftJson();
-
             builder.Services.AddDbContext<HomeManagementDbContext>();
+            builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
