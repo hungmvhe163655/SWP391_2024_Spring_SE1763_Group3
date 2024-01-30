@@ -1,8 +1,10 @@
 ﻿/**
  * Class for Tenant, this is use for entity framework to generate database.
- * This class is represent for a table in database.
- * Tenant has many bills.
- * Tenant has many contracts.
+ * This class NOT represent for a table in database. This class represent Inheritence
+ * in both Database and in Class using Table per Hierarchy (TPH).
+ * 
+ * Tenant has many Contracts.
+ * Tenant has many Requests.
  *
  * @author HungMV
  */

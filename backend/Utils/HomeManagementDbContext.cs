@@ -1,6 +1,5 @@
 ﻿using Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Backend.Utils
 {
@@ -41,7 +40,7 @@ namespace Backend.Utils
                 .ToTable("BuildingServices", bs => bs.IsTemporal());
             modelBuilder.Entity<UtilityCostType>()
                 .ToTable("UtilityCostTypes", uct => uct.IsTemporal());
-            
+
 
             base.OnModelCreating(modelBuilder);
         }
