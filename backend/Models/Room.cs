@@ -1,13 +1,13 @@
-﻿
-
-#nullable disable
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 /**
  * Class for Apartment, this is use for entity framework to generate database.
  * This class is represent for a table in database.
- * One room is in one apartment.
- * One room has many contracts.
+ * 
+ * One Room is in one Building.
+ * One Room has many Contracts.
+ * One Room has many Bills.
+ * One Room has many Tenants.
  * 
  * @author HungMV
  */
@@ -23,11 +23,18 @@ namespace Backend.Models
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
         public bool IsDeleted { get; set; }
-        //One relationship 
+
+        // One Building 
         public int BuildingId { get; set; }
         public Building Building { get; set; }
+
+        // Many Contracts
         public ICollection<Contract> Contracts { get; set; }
-        public ICollection<Bill> Bills { get; set; }    
-        public ICollection<Tenant> Tenant { get; set; }
+
+        // Many Bills
+        public ICollection<Bill> Bills { get; set; }
+
+        // Many Tenants
+        public ICollection<Tenant> Tenants { get; set; }
     }
 }

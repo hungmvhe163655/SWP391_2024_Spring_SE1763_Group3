@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Backend.DTOs;
 using Backend.Models;
 using Backend.Utils;
-using Backend.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
+/**
+ * Controller handling operations related to Bill Statuses.
+ * Provides endpoints to CRUD Bill Status.
+ * 
+ * @author HungNN
+ */
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -24,10 +24,12 @@ namespace Backend.Controllers
 
         // GET: api/BillStatus
         [HttpGet]
-        public ActionResult<List<BillStatus>> Get()
+        public ActionResult<IEnumerable<BillStatus>> Get()
         {
             return Ok(_context.BillStatuses.ToList());
         }
+
+        // POST: api/BillStatus
         [HttpPost]
         public ActionResult Post(CreateBillStatusDTO billStatusDTO)
         {
@@ -46,13 +48,17 @@ namespace Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // DELETE: api/BillStatus/{id} 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
             var deleteBillStatus = _context.BillStatuses.FirstOrDefault(b => b.Id == id);
+
+            // If not found Bill Status
             if (deleteBillStatus == null)
             {
-                return NotFound();
+                return NotFound("Bill status not found!");
             }
 
             _context.BillStatuses.Remove(deleteBillStatus);

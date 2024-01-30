@@ -1,8 +1,11 @@
 ﻿/**
- * Class for Apartment, this is use for entity framework to generate database.
+ * Class for Building, this is use for entity framework to generate database.
  * This class is represent for a table in database.
- * One apartment have many rooms.
- * One apartment have many managers.
+ * 
+ * One Building have many Rooms.
+ * One Building have many Building Services.
+ * One Building have many News.
+ * One Building have one Home Manager.
  * 
  * @author HungMV
  */
@@ -19,11 +22,18 @@ namespace Backend.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+
+        // One Home Manager
         public Guid HomeManagerId { get; set; }
         public HomeManager HomeManager { get; set; }
-        //Many relationship 
+
+        // Many Rooms
         public ICollection<Room> Rooms { get; set; }
+
+        // Many Building Services
         public ICollection<BuildingService> BuildingServices { get; set; }
+
+        // Many News
         public ICollection<News> News { get; set; }
     }
 }
