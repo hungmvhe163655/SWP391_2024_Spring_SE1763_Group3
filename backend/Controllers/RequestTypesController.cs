@@ -51,7 +51,7 @@ namespace Backend.Controllers
             _context.RequestTypes.Add(requestType);
             _context.SaveChanges();
 
-            return Ok("Save Successfully!");
+            return CreatedAtAction(nameof(GetRequestType), new { id = requestType.Id }, requestType);
         }
 
         // DELETE: api/RequestTypes/5
