@@ -1,6 +1,4 @@
-﻿using Backend.Models;
-
-namespace Backend.DTOs.RequestDTO
+﻿namespace Backend.DTOs.RequestDTO
 {
     public class CreateRequestDTO
     {

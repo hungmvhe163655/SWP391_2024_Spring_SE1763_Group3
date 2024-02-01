@@ -21,7 +21,7 @@ namespace Backend.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }              
+        public Guid Id { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime ExpectedCheckOutDate { get; set; }
         public DateTime? RealCheckOutDate { get; set; }

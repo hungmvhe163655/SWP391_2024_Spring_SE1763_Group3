@@ -25,7 +25,7 @@ namespace Backend.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        
+
         // One Tenant
         public Guid TenantId { get; set; }
         public Tenant Tenant { get; set; }

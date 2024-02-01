@@ -36,11 +36,12 @@ namespace Backend.Controllers
         }
 
         // GET: api/BillStatus/id
-        [HttpGet("{id}")] 
-        public ActionResult<BillStatus> Get(int id) { 
+        [HttpGet("{id}")]
+        public ActionResult<BillStatus> Get(int id)
+        {
 
             BillStatus? billStatus = _context.BillStatuses.FirstOrDefault(x => x.Id == id);
-           
+
             if (billStatus == null)
             {
                 return NotFound("Bill Status not found!");
@@ -71,7 +72,7 @@ namespace Backend.Controllers
 
         // PUT: api/BillStatus/id
         [HttpPut("{id}")]
-        public ActionResult Update(int id, UpdateBillStatusDTO billStatusUpdateDTO) 
+        public ActionResult Update(int id, UpdateBillStatusDTO billStatusUpdateDTO)
         {
             // Check if Id is correct
             if (id != billStatusUpdateDTO.Id)
@@ -89,7 +90,7 @@ namespace Backend.Controllers
             }
 
             // Map DTO to model class
-            _mapper.Map(billStatusUpdateDTO, billStatus); 
+            _mapper.Map(billStatusUpdateDTO, billStatus);
 
             _context.Entry(billStatus).State = EntityState.Modified;
 
