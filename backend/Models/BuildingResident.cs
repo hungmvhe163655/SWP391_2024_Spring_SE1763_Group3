@@ -1,4 +1,7 @@
-﻿/**
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+/**
  * Class for Building Resident, this is use for entity framework to generate database.
  * This class is represent for a table in database.
  * 
@@ -13,6 +16,8 @@ namespace Backend.Models
 {
     public class BuildingResident
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }

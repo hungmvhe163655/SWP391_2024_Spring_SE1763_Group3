@@ -25,6 +25,7 @@ namespace Backend.Utils
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<HomeManager> HomeManagers { get; set; }
         public DbSet<News> News { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
