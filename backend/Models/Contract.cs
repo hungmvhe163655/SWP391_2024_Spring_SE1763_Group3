@@ -10,7 +10,7 @@
  * <p>ExpectedCheckOutDate is fix checkout date in contract, 
  * if tenant checkout before this, tenant will loose deposit</p>
  * 
- * @author HungMV
+ * @author PhuVD
  */
 
 #nullable disable

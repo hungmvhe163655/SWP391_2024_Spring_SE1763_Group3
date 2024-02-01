@@ -1,73 +1,120 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Backend.DTOs.RequestTypeDTO;
 using Backend.Models;
 using Backend.Utils;
-using Backend.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+/**
+ * Controller handling operations related to Request Types.
+ * Provides endpoints to CRUD Request Types.
+ * 
+ * @author PhuVD
+ */
 
 namespace Backend.Controllers
 {
+    // Inject service
     [ApiController]
     [Route("api/[controller]")]
     public class RequestTypesController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
+        private readonly IMapper _mapper;
 
-        public RequestTypesController(HomeManagementDbContext context)
+        public RequestTypesController(HomeManagementDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
+
+
 
         // GET: api/RequestTypes
         [HttpGet]
-        public ActionResult<IEnumerable<RequestType>> GetRequestTypes()
+        public ActionResult<IEnumerable<RequestType>> Get()
         {
-            return _context.RequestTypes.ToList();
+            return Ok(_context.RequestTypes.ToList());
         }
 
-        // GET: api/RequestTypes/5
+        // GET: api/RequestTypes/{id}
         [HttpGet("{id}")]
-        public ActionResult<RequestType> GetRequestType(int id)
+        public ActionResult<RequestType> Get(int id)
         {
-            var requestType = _context.RequestTypes.Find(id);
+            RequestType? requestType = _context.RequestTypes.FirstOrDefault(x => x.Id == id);
 
             if (requestType == null)
             {
-                return NotFound();
+                return NotFound("Request type not found!");
             }
 
-            return requestType;
+            return Ok(requestType);
         }
 
         // POST: api/RequestTypes
         [HttpPost]
-        public ActionResult<RequestType> PostRequestType(CreateRequestTypeDTO requestTypeDto)
+        public ActionResult<RequestType> Post(CreateRequestTypeDTO requestTypeDTO)
         {
-            var requestType = new RequestType { Type = requestTypeDto.Type };
-            _context.RequestTypes.Add(requestType);
-            _context.SaveChanges();
+            try
+            {
+                RequestType requestType = _mapper.Map<RequestType>(requestTypeDTO);
 
-            return CreatedAtAction(nameof(GetRequestType), new { id = requestType.Id }, requestType);
+                _context.RequestTypes.Add(requestType);
+
+                _context.SaveChanges();
+
+                return Ok("Save successfully !");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // DELETE: api/RequestTypes/5
-        [HttpDelete("{id}")]
-        public IActionResult DeleteRequestType(int id)
+        // PUT: api/RequestTypes/{id}
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, UpdateRequestTypeDTO requestTypeUpdateDTO)
         {
-            var requestType = _context.RequestTypes.Find(id);
-            if (requestType == null)
+            // Check if Id is correct
+            if (id != requestTypeUpdateDTO.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _context.RequestTypes.Remove(requestType);
+            // Find in Database object with id 
+            RequestType requestType = _context.RequestTypes.FirstOrDefault(rt => rt.Id == id);
+
+            // Not found will return 404
+            if (requestType == null)
+            {
+                return NotFound("Request type not found!");
+            }
+
+            // Map DTO to model class
+            _mapper.Map(requestTypeUpdateDTO, requestType);
+
+            _context.Entry(requestType).State = EntityState.Modified;
+
             _context.SaveChanges();
 
-            return NoContent();
+            return Ok("Update successfully!");
+        }
+
+        // DELETE: api/RequestTypes/{id}
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var deleteRequestType = _context.RequestTypes.FirstOrDefault(r => r.Id == id);
+            // If not found Request Type
+            if (deleteRequestType == null)
+            {
+                return NotFound("Request type not found!");
+            }
+
+            _context.RequestTypes.Remove(deleteRequestType);
+            _context.SaveChanges();
+
+            return Ok("Delete successfully!");
         }
     }
 }
