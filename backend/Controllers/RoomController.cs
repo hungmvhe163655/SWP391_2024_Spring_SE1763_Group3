@@ -7,6 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+/**
+ * Controller handling operations related to Rooms.
+ * Provides endpoints to CRUD Room.
+ * 
+ * @author LongNCB
+ */
+
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
