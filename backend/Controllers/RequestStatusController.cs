@@ -6,6 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+/**
+ * Controller handling operations related to Request Statuses.
+ * Provides endpoints to CRUD Request Status.
+ * 
+ * @author LongNCB
+ */
+
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -15,11 +22,11 @@ namespace Backend.Controllers
         private readonly HomeManagementDbContext _context;
         private readonly IMapper _mapper;
 
-        public RequestStatusController(HomeManagementDbContext context)
+        public RequestStatusController(HomeManagementDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-
         // GET: api/RequestStatus
         [HttpGet]
         public ActionResult<IEnumerable<RequestStatus>> Get()
@@ -62,7 +69,7 @@ namespace Backend.Controllers
             }
         }
 
-
+        // DELETE: api/RequestStatus/id
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
@@ -85,6 +92,7 @@ namespace Backend.Controllers
             }
         }
 
+        // PUT: api/RequestStatus/id
         [HttpPut("{id}")]
         public ActionResult Update(int id, UpdateRequestStatusDTO requestStatusUpdateDTO)
         {
