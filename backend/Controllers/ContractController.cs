@@ -77,10 +77,10 @@ namespace Backend.Controllers
         public IActionResult Update(Guid id, UpdateContractDTO contractUpdateDTO)
         {
             // Check if Id is correct
-            if (id != contractUpdateDTO.Id)
+            /*if (id != contractUpdateDTO.Id)
             {
                 return BadRequest();
-            }
+            }*/
 
             // Find in Database object with id 
             Contract contract = _context.Contracts.FirstOrDefault(x => x.Id == id);
