@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Backend.DTOs.RoleDTO;
 using Backend.Models;
 using Backend.Utils;
-using Backend.DTOs.RoleDTO;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -31,10 +26,10 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-          if (_context.Roles == null)
-          {
-              return NotFound();
-          }
+            if (_context.Roles == null)
+            {
+                return NotFound();
+            }
             return await _context.Roles.ToListAsync();
         }
 
@@ -42,10 +37,10 @@ namespace Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>> GetRole(int id)
         {
-          if (_context.Roles == null)
-          {
-              return NotFound();
-          }
+            if (_context.Roles == null)
+            {
+                return NotFound();
+            }
             var role = await _context.Roles.FindAsync(id);
 
             if (role == null)

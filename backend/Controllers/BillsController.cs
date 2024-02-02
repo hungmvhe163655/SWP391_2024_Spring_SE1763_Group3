@@ -118,7 +118,7 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
-            
+
             // Soft Delete
             bill.IsDeleted = true;
 
