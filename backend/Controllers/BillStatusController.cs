@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Backend.DTOs;
 using Backend.Models;
 using Backend.Utils;
+<<<<<<< HEAD
 using AutoMapper;
 using Backend.DTOs;
+=======
+using Microsoft.AspNetCore.Mvc;
+>>>>>>> e8f06e7b9f74fe2e2f025c103fa96f53832f755a
 
+/**
+ * Controller handling operations related to Bill Statuses.
+ * Provides endpoints to CRUD Bill Status.
+ * 
+ * @author HungNN
+ */
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -27,11 +31,12 @@ namespace Backend.Controllers
 
         // GET: api/BillStatus
         [HttpGet]
-        public ActionResult<List<BillStatus>> Get()
+        public ActionResult<IEnumerable<BillStatus>> Get()
         {
             return Ok(_context.BillStatuses.ToList());
         }
 
+<<<<<<< HEAD
         // GET: api/BillStatus
         [HttpGet("{id}")]
         public ActionResult<BillStatus> Get(int id)
@@ -44,6 +49,8 @@ namespace Backend.Controllers
             return Ok(billStatus);
         }
 
+=======
+>>>>>>> e8f06e7b9f74fe2e2f025c103fa96f53832f755a
         // POST: api/BillStatus
         [HttpPost]
         public ActionResult Post(CreateBillStatusDTO billStatusDTO)
@@ -60,6 +67,7 @@ namespace Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+<<<<<<< HEAD
         public ActionResult Update(BillStatus billStatus)
         {
             try { }
@@ -67,13 +75,19 @@ namespace Backend.Controllers
         //PUT: api/BillStatus/id
         [HttpPut("{id}")]
 
+=======
+
+        // DELETE: api/BillStatus/{id} 
+>>>>>>> e8f06e7b9f74fe2e2f025c103fa96f53832f755a
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
             var deleteBillStatus = _context.BillStatuses.FirstOrDefault(b => b.Id == id);
+
+            // If not found Bill Status
             if (deleteBillStatus == null)
             {
-                return NotFound();
+                return NotFound("Bill status not found!");
             }
 
             _context.BillStatuses.Remove(deleteBillStatus);
