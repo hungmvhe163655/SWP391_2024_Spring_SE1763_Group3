@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Backend.DTOs.RequestStatusDTO;
 using Backend.Models;
 using Backend.Utils;
@@ -16,7 +16,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RequestStatusController : ControllerBase
+    public class RequestStatusesController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
         private readonly IMapper _mapper;
