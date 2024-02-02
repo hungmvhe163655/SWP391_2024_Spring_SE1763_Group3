@@ -110,8 +110,7 @@ namespace Backend.Controllers
                 existingBuilding.Address = buildingUpdate.Address;
                 existingBuilding.Description = buildingUpdate.Description;
 
-                // You may need to handle the relationship with HomeManager separately
-                existingBuilding.HomeManagerId = buildingUpdate.HomeManagerId;
+
 
                 _context.SaveChanges();
 
