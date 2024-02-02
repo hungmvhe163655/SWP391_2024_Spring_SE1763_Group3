@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Backend.DTOs.RequestTypeDTO;
 using Backend.Models;
 using Backend.Utils;

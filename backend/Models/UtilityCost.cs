@@ -1,4 +1,7 @@
-﻿/**
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+/**
  * Class for Utility Cost, this is use for entity framework to generate database.
  * This class is represent for a table in database.
  * 
@@ -13,6 +16,8 @@ namespace Backend.Models
 {
     public class UtilityCost
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public int PreviousMetric { get; set; }
         public int NewMetric { get; set; }
@@ -24,6 +29,6 @@ namespace Backend.Models
         // One Utility Cost Type
         public int UtilityCostTypeId { get; set; }
         public UtilityCostType UtilityCostType { get; set; }
-        
+
     }
 }

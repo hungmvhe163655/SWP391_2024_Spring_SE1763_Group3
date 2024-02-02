@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 /**
  * Class for Contract, this is use for entity framework to generate database.
@@ -18,7 +19,9 @@ namespace Backend.Models
 {
     public class Contract
     {
-        public Guid Id { get; set; }              
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime ExpectedCheckOutDate { get; set; }
         public DateTime? RealCheckOutDate { get; set; }

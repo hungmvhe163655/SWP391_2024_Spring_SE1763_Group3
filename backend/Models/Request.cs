@@ -1,4 +1,7 @@
-﻿/**
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+/**
  * Class for Request, this is use for entity framework to generate database.
  * This class is represent for a table in database.
  * 
@@ -15,12 +18,14 @@ namespace Backend.Models
 {
     public class Request
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        
+
         // One Tenant
         public Guid TenantId { get; set; }
         public Tenant Tenant { get; set; }

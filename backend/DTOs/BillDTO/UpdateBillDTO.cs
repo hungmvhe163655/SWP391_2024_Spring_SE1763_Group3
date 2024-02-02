@@ -1,7 +1,8 @@
 ﻿namespace Backend.DTOs.BillDTO
 {
-    public class CreateBillDTO
+    public class UpdateBillDTO
     {
+        public Guid Id { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
         public string Description { get; set; }
@@ -10,6 +11,5 @@
 
         // One Room 
         public Guid RoomId { get; set; }
-
     }
 }

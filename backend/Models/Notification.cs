@@ -1,14 +1,12 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 /**
- * Class for News, this is use for entity framework to generate database.
+ * Class for Notification, this is use for entity framework to generate database.
  * This class is represent for a table in database.
  * 
- * One News is authored by one Home Manager.
- * One News for many Buildings.
+ * One Notification send to many Tenants.
+ * One Notification is made by one Home Manager.
  * 
  * @author HungMV
  */
@@ -16,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 #nullable disable
 namespace Backend.Models
 {
-    public class News
+    public class Notification
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -30,7 +28,7 @@ namespace Backend.Models
         public Guid HomeMangerId { get; set; }
         public HomeManager HomeManager { get; set; }
 
-        // Many Buildings
-        public ICollection<Building> Buildings { get; set; }
+        // Many Tenants
+        public ICollection<Tenant> Tenants { get; set; }
     }
 }

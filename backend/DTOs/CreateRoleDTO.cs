@@ -2,6 +2,6 @@
 {
     public class CreateRoleDTO
     {
-        public  string Role { get; set; }
+        public string Role { get; set; }
     }
 }

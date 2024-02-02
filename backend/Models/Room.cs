@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 /**
  * Class for Apartment, this is use for entity framework to generate database.
@@ -17,6 +18,8 @@ namespace Backend.Models
 {
     public class Room
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string RoomNo { get; set; }
         public string Size { get; set; }
