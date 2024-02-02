@@ -1,7 +1,8 @@
 ﻿namespace Backend.DTOs.BillStatusDTO
 {
-    public class CreateBillStatusDTO
+    public class UpdateBillStatusDTO
     {
+        public int Id { get; set; }
         public string Status { get; set; }
     }
 }

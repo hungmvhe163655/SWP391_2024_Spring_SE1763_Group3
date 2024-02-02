@@ -1,7 +1,6 @@
 ﻿using Backend.DTOs;
 using Backend.Models;
 using Backend.Utils;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
@@ -22,7 +21,7 @@ namespace Backend.Controllers
             return Ok(_context.RequestStatuses.ToList());
         }
         [HttpPost]
-        public ActionResult Post(DTOs.CreateRequestStatusDTO requestStatusPost)
+        public ActionResult Post(CreateRequestStatusDTO requestStatusPost)
         {
             try
             {
