@@ -10,8 +10,7 @@ namespace Backend
 
             // Add services to the container.
 
-            builder.Services.AddControllers()
-                .AddNewtonsoftJson();
+            builder.Services.AddControllers();
             builder.Services.AddDbContext<HomeManagementDbContext>();
             builder.Services.AddAutoMapper(typeof(Program));
 

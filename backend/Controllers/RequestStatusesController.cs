@@ -21,7 +21,7 @@ namespace Backend.Controllers
         private readonly HomeManagementDbContext _context;
         private readonly IMapper _mapper;
 
-        public RequestStatusController(HomeManagementDbContext context, IMapper mapper)
+        public RequestStatusesController(HomeManagementDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
