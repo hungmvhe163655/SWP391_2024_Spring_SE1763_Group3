@@ -1,118 +1,127 @@
-﻿using Backend.DTOs;
-using Backend.Models;
-using Backend.Utils;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Backend.Models;
+using Backend.Utils;
+using Backend.DTOs.RoleDTO;
+using AutoMapper;
 
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RolesController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
+        private readonly IMapper _mapper;
 
-        public RoleController(HomeManagementDbContext context)
+        public RolesController(HomeManagementDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET api/role
+
+
+        // GET: api/Roles
         [HttpGet]
-        public ActionResult<List<Role>> Get()
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-            // Retrieve and return a list of all roles from the database
-            return Ok(_context.Roles.ToList());
+          if (_context.Roles == null)
+          {
+              return NotFound();
+          }
+            return await _context.Roles.ToListAsync();
         }
 
-        // POST api/role
-        [HttpPost]
-        public ActionResult Post(DTOs.RoleDTO.CreateRoleDTO rolePost)
+        // GET: api/Roles/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Role>> GetRole(int id)
         {
-            try
-            {
-                // Create a new Role entity based on the provided DTO
-                Role role = new Role
-                {
-                    Name = rolePost.Name
-                };
+          if (_context.Roles == null)
+          {
+              return NotFound();
+          }
+            var role = await _context.Roles.FindAsync(id);
 
-                // Add the new role to the database and save changes
-                _context.Roles.Add(role);
-                _context.SaveChanges();
-
-                // Return a success message
-                return Ok("Save Successfully!");
-            }
-            catch (Exception ex)
+            if (role == null)
             {
-                // Return a bad request response with the exception message if an error occurs
-                return BadRequest(ex.Message);
+                return NotFound();
             }
+
+            return role;
         }
 
-        // DELETE api/role/{id}
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
-        {
-            try
-            {
-                // Find the role with the specified ID
-                var roleToDelete = _context.Roles.FirstOrDefault(x => x.Id == id);
-
-                // Return a not found response if the role is not found
-                if (roleToDelete == null)
-                {
-                    return NotFound("Role not found.");
-                }
-
-                // Remove the role from the database and save changes
-                _context.Roles.Remove(roleToDelete);
-                _context.SaveChanges();
-
-                // Return a success message
-                return Ok("Delete Successfully!");
-            }
-            catch (Exception ex)
-            {
-                // Return a bad request response with the exception message if an error occurs
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // PUT api/role/{id}
+        // PUT: api/Roles/5
         [HttpPut("{id}")]
-        public ActionResult Update(int id, DTOs.RoleDTO.UpdateRoleDTO roleUpdate)
+        public async Task<IActionResult> PutRole(int id, Role role)
         {
+            if (id != role.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(role).State = EntityState.Modified;
+
             try
             {
-                // Find the existing role with the specified ID
-                var existingRole = _context.Roles.FirstOrDefault(x => x.Id == id);
-
-                // Return a not found response if the existing role is not found
-                if (existingRole == null)
-                {
-                    return NotFound("Role not found.");
-                }
-
-                // Update the properties of the existing role based on the provided DTO
-                existingRole.Name = roleUpdate.Name;
-
-                // Save changes to the database
-                _context.SaveChanges();
-
-                // Return a success message
-                return Ok("Update Successfully!");
+                await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (DbUpdateConcurrencyException)
             {
-                // Return a bad request response with the exception message if an error occurs
-                return BadRequest(ex.Message);
+                if (!RoleExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
+
+            return NoContent();
+        }
+
+        // POST: api/Roles
+        [HttpPost]
+        public async Task<ActionResult<Role>> PostRole(CreateRoleDTO roleDTO)
+        {
+
+            Role role = _mapper.Map<Role>(roleDTO);
+
+            _context.Roles.Add(role);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetRole", new { id = role.Id }, role);
+        }
+
+        // DELETE: api/Roles/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRole(int id)
+        {
+            if (_context.Roles == null)
+            {
+                return NotFound();
+            }
+            var role = await _context.Roles.FindAsync(id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            _context.Roles.Remove(role);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool RoleExists(int id)
+        {
+            return (_context.Roles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
-
