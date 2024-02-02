@@ -29,6 +29,6 @@ namespace Backend.Models
         // One Utility Cost Type
         public int UtilityCostTypeId { get; set; }
         public UtilityCostType UtilityCostType { get; set; }
-        
+
     }
 }

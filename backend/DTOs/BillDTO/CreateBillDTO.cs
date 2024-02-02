@@ -1,6 +1,4 @@
-﻿using Backend.Models;
-
-namespace Backend.DTOs.BillDTO
+﻿namespace Backend.DTOs.BillDTO
 {
     public class CreateBillDTO
     {

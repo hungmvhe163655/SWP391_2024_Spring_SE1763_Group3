@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Backend.DTOs.BillDTO;
 using Backend.Models;
 using Backend.Utils;
-using Backend.DTOs.BillDTO;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -25,8 +20,6 @@ namespace Backend.Controllers
             _mapper = mapper;
         }
 
-
-
         // GET: api/Bills
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bill>>> GetBills()
@@ -35,7 +28,9 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
-            return await _context.Bills.ToListAsync();
+            return await _context.Bills
+                .Where(b => !b.IsDeleted)
+                .ToListAsync();
         }
 
         // GET: api/Bills/5
@@ -58,12 +53,24 @@ namespace Backend.Controllers
 
         // PUT: api/Bills/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBill(Guid id, Bill bill)
+        public async Task<IActionResult> PutBill(Guid id, UpdateBillDTO billDTO)
         {
-            if (id != bill.Id)
+            if (id != billDTO.Id)
             {
                 return BadRequest();
             }
+
+            // Find in Database object with id
+            Bill? bill = await _context.Bills.FindAsync(id);
+
+            // Not found will return 404
+            if (bill == null)
+            {
+                return NotFound("Bill not found!");
+            }
+
+            // Map DTO to model class
+            _mapper.Map(billDTO, bill);
 
             _context.Entry(bill).State = EntityState.Modified;
 
@@ -83,7 +90,7 @@ namespace Backend.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Update successfully!");
         }
 
         // POST: api/Bills
@@ -111,8 +118,10 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
+            
+            // Soft Delete
+            bill.IsDeleted = true;
 
-            _context.Bills.Remove(bill);
             await _context.SaveChangesAsync();
 
             return NoContent();

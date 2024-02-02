@@ -2,7 +2,6 @@
 using Backend.DTOs.RequestStatusDTO;
 using Backend.Models;
 using Backend.Utils;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
