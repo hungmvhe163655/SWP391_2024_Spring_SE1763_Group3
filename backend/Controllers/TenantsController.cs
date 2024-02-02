@@ -65,7 +65,7 @@ namespace Backend.Controllers
                 return NotFound();
             }
 
-            _mapper.Map(tenant, tenantDTO);
+            _mapper.Map(tenantDTO, tenant);
 
             try
             {

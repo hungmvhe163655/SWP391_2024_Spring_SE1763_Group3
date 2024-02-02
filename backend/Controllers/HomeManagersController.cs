@@ -55,14 +55,21 @@ namespace Backend.Controllers
 
         // PUT: api/HomeManagers/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHomeManager(Guid id, HomeManager homeManager)
+        public async Task<IActionResult> PutHomeManager(Guid id, UpdateHomeManagerDTO homeManagerDTO)
         {
-            if (id != homeManager.Id)
+            if (id != homeManagerDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(homeManager).State = EntityState.Modified;
+            HomeManager? homeManager = await _context.HomeManagers.FindAsync(id);
+
+            if (homeManager == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(homeManagerDTO, homeManager);
 
             try
             {
