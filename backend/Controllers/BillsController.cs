@@ -28,7 +28,9 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
-            return await _context.Bills.ToListAsync();
+            return await _context.Bills
+                .Where(b => !b.IsDeleted)
+                .ToListAsync();
         }
 
         // GET: api/Bills/5
@@ -116,8 +118,10 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
+            
+            // Soft Delete
+            bill.IsDeleted = true;
 
-            _context.Bills.Remove(bill);
             await _context.SaveChangesAsync();
 
             return NoContent();
