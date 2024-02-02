@@ -1,7 +1,16 @@
-﻿using Backend.DTOs;
+﻿using AutoMapper;
+using Backend.DTOs.RequestStatusDTO;
 using Backend.Models;
 using Backend.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+/**
+ * Controller handling operations related to Request Statuses.
+ * Provides endpoints to CRUD Request Status.
+ * 
+ * @author LongNCB
+ */
 
 namespace Backend.Controllers
 {
@@ -10,16 +19,36 @@ namespace Backend.Controllers
     public class RequestStatusController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
+        private readonly IMapper _mapper;
 
-        public RequestStatusController(HomeManagementDbContext context)
+        public RequestStatusController(HomeManagementDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
+        // GET: api/RequestStatus
         [HttpGet]
-        public ActionResult<List<RequestStatus>> Get()
+        public ActionResult<IEnumerable<RequestStatus>> Get()
         {
             return Ok(_context.RequestStatuses.ToList());
         }
+
+        // GET: api/RequestStatus/id
+        [HttpGet("{id}")]
+        public ActionResult<RequestStatus> Get(int id)
+        {
+
+            RequestStatus? requestlStatus = _context.RequestStatuses.FirstOrDefault(x => x.Id == id);
+
+            if (requestlStatus == null)
+            {
+                return NotFound("Request Status not found!");
+            }
+
+            return Ok(requestlStatus);
+        }
+
+        // POST: api/RequestStatus
         [HttpPost]
         public ActionResult Post(CreateRequestStatusDTO requestStatusPost)
         {
@@ -38,6 +67,8 @@ namespace Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // DELETE: api/RequestStatus/id
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
@@ -60,5 +91,31 @@ namespace Backend.Controllers
             }
         }
 
+        // PUT: api/RequestStatus/id
+        [HttpPut("{id}")]
+        public ActionResult Update(int id, UpdateRequestStatusDTO requestStatusUpdateDTO)
+        {
+            // Check Id
+            if(id != requestStatusUpdateDTO.Id)
+            {
+                return BadRequest();
+            }
+            RequestStatus? requestStatus = _context.RequestStatuses.FirstOrDefault(rs => rs.Id == id);
+
+            // Not found will return 404
+            if (requestStatus == null)
+            {
+                return NotFound("Request Status not found!");
+            }
+
+            // Map DTO to model class
+            _mapper.Map(requestStatusUpdateDTO, requestStatus);
+
+            _context.Entry(requestStatus).State = EntityState.Modified;
+
+            _context.SaveChanges();
+
+            return Ok("Update successfully!");
+        }
     }
 }
