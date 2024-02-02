@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Backend.DTOs.BuildingDTO;
 using Backend.Models;
 using Backend.Utils;
-using AutoMapper;
-using Backend.DTOs.BuildingDTO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -31,10 +26,10 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Building>>> GetBuildings()
         {
-          if (_context.Buildings == null)
-          {
-              return NotFound();
-          }
+            if (_context.Buildings == null)
+            {
+                return NotFound();
+            }
             return await _context.Buildings
                 .Where(b => !b.IsDeleted)
                 .ToListAsync();
@@ -44,10 +39,10 @@ namespace Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Building>> GetBuilding(int id)
         {
-          if (_context.Buildings == null)
-          {
-              return NotFound();
-          }
+            if (_context.Buildings == null)
+            {
+                return NotFound();
+            }
             var building = await _context.Buildings.FindAsync(id);
 
             if (building == null)

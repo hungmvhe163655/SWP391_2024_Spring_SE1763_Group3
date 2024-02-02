@@ -1,6 +1,4 @@
-﻿using Backend.Models;
-
-namespace Backend.DTOs.BuildingDTO
+﻿namespace Backend.DTOs.BuildingDTO
 {
     public class CreateBuildingDTO
     {
