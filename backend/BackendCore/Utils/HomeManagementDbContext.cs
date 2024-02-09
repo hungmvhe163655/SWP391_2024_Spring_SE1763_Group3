@@ -33,6 +33,8 @@ namespace BackendCore.Utils
                             .AddJsonFile("appsettings.json")
                             .Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+
+            optionsBuilder.AddInterceptors(new SoftDeleteInterceptor());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +46,9 @@ namespace BackendCore.Utils
             {
                 relationship.DeleteBehavior = DeleteBehavior.NoAction;
             }
+
+            modelBuilder.Entity<BuildingResident>()
+                .HasQueryFilter(x => x.IsDeleted == false);
 
             // Init data
             modelBuilder.ApplyConfiguration(new TenantConfiguration());

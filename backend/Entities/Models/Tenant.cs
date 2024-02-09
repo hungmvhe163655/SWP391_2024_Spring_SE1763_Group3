@@ -20,8 +20,8 @@ namespace Entities.Models
         [MaxLength(500)]
         public string Address { get; set; } = null!;
 
-        public Guid RoomId { get; set; }
-        public virtual Room Room { get; set; } = null!;
+        public Guid? RoomId { get; set; }
+        public virtual Room? Room { get; set; } = null!;
 
         public virtual ICollection<Contract> Contracts { get; set; } = null!;
         public virtual ICollection<Request> Requests { get; set; } = null!;

@@ -8,6 +8,8 @@ namespace Repositories.Configurations
     {
         public void Configure(EntityTypeBuilder<Contract> builder)
         {
+            builder.HasQueryFilter(x => x.IsDeleted == false);
+
             builder.HasData(
                 new Contract
                 {

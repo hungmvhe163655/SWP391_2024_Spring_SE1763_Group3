@@ -1,9 +1,9 @@
 ﻿namespace Entities.Exceptions
 {
-    public sealed class NewsNotFoundException : NotFoundException
+    public sealed class TenantNotFoundException : NotFoundException
     {
-        public NewsNotFoundException(Guid newsId) :
-            base($"The company with id: {newsId} doesn't exist in the database.")
+        public TenantNotFoundException(Guid newsId) :
+            base($"The Tenant with id: {newsId} doesn't exist in the database.")
         {
         }
     }

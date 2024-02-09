@@ -8,6 +8,8 @@ namespace Repositories.Configurations
     {
         public void Configure(EntityTypeBuilder<Request> builder)
         {
+            builder.HasQueryFilter(x => x.IsDeleted == false);
+
             builder.HasData(
                 new Request
                 {

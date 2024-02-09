@@ -4,6 +4,7 @@ using HomeManagementBackend.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog.Web;
 using NLog;
+using Shared;
 
 namespace BackendCore
 {
@@ -34,7 +35,8 @@ namespace BackendCore
                     
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
-                builder.Services.AddAutoMapper(typeof(Program));
+                builder.Services.AddAutoMapper(typeof(AssemblyReference));
+                builder.Services.AddDbContext<HomeManagementDbContext>();
 
                 var app = builder.Build();
 
