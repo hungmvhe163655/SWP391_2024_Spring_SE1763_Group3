@@ -5,11 +5,20 @@ using Microsoft.AspNetCore.HttpOverrides;
 using NLog.Web;
 using NLog;
 using Shared;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace BackendCore
 {
     public class Program
     {
+        static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
+            new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
+                .Services.BuildServiceProvider()
+                .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>().First();
+
         public static void Main(string[] args)
         {
             // Early init of NLog to allow startup and exception logging, before host is built
@@ -17,7 +26,7 @@ namespace BackendCore
                 .LoadConfigurationFromAppSettings()
                 .GetCurrentClassLogger();
             logger.Debug("init main");
-
+           
             try
             {
 
@@ -31,7 +40,16 @@ namespace BackendCore
                 builder.Services.ConfigureLoggerService();
                 builder.Services.ConfigureCors();
 
-                builder.Services.AddControllers();
+                builder.Services.Configure<ApiBehaviorOptions>(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
+                });
+
+                builder.Services.AddControllers(config => {
+                    config.RespectBrowserAcceptHeader = true;
+                    config.ReturnHttpNotAcceptable = true;
+                    config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                });
                     
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();

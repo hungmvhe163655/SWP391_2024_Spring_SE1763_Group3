@@ -9,6 +9,7 @@ namespace Shared.TenantDTO
         {
             CreateMap<Tenant, ReadTenantDTO>().ReverseMap();
             CreateMap<CreateTenantDTO, Tenant>();
+            CreateMap<UpdateTenantDTO, Tenant>().ReverseMap();
         }
     }
 }

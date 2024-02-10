@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BackendCore.Utils;
+using BackendCore.Utils.ActionFilters;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.NotificationDTO;
@@ -35,8 +37,7 @@ namespace BackendCore.Controllers
         [HttpGet("{id:guid}", Name = "TenantById")]
         public async Task<IActionResult> GetTenant(Guid id)
         {
-            var tenant = await _context.Tenants.FindAsync(id)
-                ?? throw new TenantNotFoundException(id);
+            var tenant = await FindTenant(id);
 
             var tenantDTO = _mapper.Map<ReadTenantDTO>(tenant);
 
@@ -44,14 +45,10 @@ namespace BackendCore.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateTenant(
             [FromBody] CreateTenantDTO createTenantDTO)
         {
-            if (createTenantDTO is null)
-            {
-                return BadRequest("Tenant object is null!");
-            }
-
             var createTenant = _mapper.Map<Tenant>(createTenantDTO);
 
             await _context.Tenants.AddAsync(createTenant);
@@ -62,11 +59,48 @@ namespace BackendCore.Controllers
             return CreatedAtRoute("TenantById", new { id = createdTenant.Id }, createdTenant);
         }
 
+        [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> UpdateTenant(Guid id, 
+            [FromBody] UpdateTenantDTO updateTenantDTO)
+        {
+            var tenant = await FindTenant(id);
+
+            _mapper.Map(updateTenantDTO, tenant);
+            await _context.SaveChangesAsync();
+
+            return Ok("Update successful!");
+        }
+
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> PartiallyUpdateTenant(Guid id,
+            [FromBody] JsonPatchDocument<UpdateTenantDTO> patchDoc)
+        {
+            if (patchDoc is null)
+            {
+                return BadRequest("patchDoc object is null.");
+            }
+
+            var tenant = await FindTenant(id);
+
+            var tenantToPatch = _mapper.Map<UpdateTenantDTO>(tenant);
+
+            patchDoc.ApplyTo(tenantToPatch, ModelState);
+
+            TryValidateModel(tenantToPatch);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            _mapper.Map(tenantToPatch, tenant);
+            await _context.SaveChangesAsync();
+
+            return Ok("Partially update successful!");
+        }
+
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteTenant(Guid id)
         {
-            var deleteTenant = await _context.Tenants.FindAsync(id)
-                ?? throw new TenantNotFoundException(id);
+            var deleteTenant = await FindTenant(id);
 
             _context.Tenants.Remove(deleteTenant);
             await _context.SaveChangesAsync();
@@ -87,5 +121,9 @@ namespace BackendCore.Controllers
 
             return Ok(notificationsDTO);
         }
+
+        private async Task<Tenant> FindTenant(Guid id) 
+            => await _context.Tenants.FindAsync(id)
+             ?? throw new TenantNotFoundException(id);
     }
 }
