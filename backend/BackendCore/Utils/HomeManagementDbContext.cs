@@ -50,6 +50,7 @@ namespace BackendCore.Utils
             modelBuilder.Entity<BuildingResident>()
                 .HasQueryFilter(x => x.IsDeleted == false);
 
+
             // Init data
             modelBuilder.ApplyConfiguration(new TenantConfiguration());
             modelBuilder.ApplyConfiguration(new HomeManagerConfiguration());

@@ -62,6 +62,18 @@ namespace BackendCore.Controllers
             return CreatedAtRoute("TenantById", new { id = createdTenant.Id }, createdTenant);
         }
 
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteTenant(Guid id)
+        {
+            var deleteTenant = await _context.Tenants.FindAsync(id)
+                ?? throw new TenantNotFoundException(id);
+
+            _context.Tenants.Remove(deleteTenant);
+            await _context.SaveChangesAsync();
+
+            return Ok("Delete successful!");
+        }
+
         [HttpGet("{id:guid}/notifications")]
         public async Task<IActionResult> GetTenantNotifications(Guid id)
         {

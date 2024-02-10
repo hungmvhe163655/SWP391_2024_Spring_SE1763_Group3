@@ -7,7 +7,7 @@ namespace Repositories.Configurations
     public class HomeManagerConfiguration : IEntityTypeConfiguration<HomeManager>
     {
         public void Configure(EntityTypeBuilder<HomeManager> builder)
-        {
+        {         
             builder.HasData(
                 new HomeManager
                 {
