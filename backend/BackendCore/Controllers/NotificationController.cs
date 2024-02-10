@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BackendCore.Utils;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendCore.Controllers

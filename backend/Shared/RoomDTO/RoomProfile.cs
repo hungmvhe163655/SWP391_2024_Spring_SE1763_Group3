@@ -5,7 +5,8 @@ namespace Shared.RoomDTO
 {
     public class RoomProfile : Profile
     {
-        public RoomProfile() {
+        public RoomProfile()
+        {
             CreateMap<CreateRoomDTO, Room>();
         }
     }

@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using Entities.Base;
 using Microsoft.EntityFrameworkCore;
-using Entities.Base;
-using System.Threading;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace BackendCore.Utils
 {
@@ -24,11 +23,11 @@ namespace BackendCore.Utils
             return base.SavingChanges(eventData, result);
         }
 
-        public override ValueTask<InterceptionResult<int>> 
-            SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, 
+        public override ValueTask<InterceptionResult<int>>
+            SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result,
             CancellationToken cancellationToken = default)
         {
-            if (eventData.Context is null) return 
+            if (eventData.Context is null) return
                     base.SavingChangesAsync(eventData, result, cancellationToken);
 
             foreach (var entry in eventData.Context.ChangeTracker.Entries())

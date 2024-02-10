@@ -2,12 +2,12 @@ using BackendCore.Services.InternalServices.Contracts;
 using BackendCore.Utils;
 using HomeManagementBackend.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
-using NLog.Web;
-using NLog;
-using Shared;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using NLog;
+using NLog.Web;
+using Shared;
 
 namespace BackendCore
 {
@@ -26,7 +26,7 @@ namespace BackendCore
                 .LoadConfigurationFromAppSettings()
                 .GetCurrentClassLogger();
             logger.Debug("init main");
-           
+
             try
             {
 
@@ -45,12 +45,13 @@ namespace BackendCore
                     options.SuppressModelStateInvalidFilter = true;
                 });
 
-                builder.Services.AddControllers(config => {
+                builder.Services.AddControllers(config =>
+                {
                     config.RespectBrowserAcceptHeader = true;
                     config.ReturnHttpNotAcceptable = true;
                     config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
                 });
-                    
+
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
                 builder.Services.AddAutoMapper(typeof(AssemblyReference));

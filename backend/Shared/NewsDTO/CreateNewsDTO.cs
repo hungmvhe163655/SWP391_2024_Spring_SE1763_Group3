@@ -1,6 +1,4 @@
-﻿using Entities.Models;
-
-namespace Shared.NewsDTO
+﻿namespace Shared.NewsDTO
 {
     public class CreateNewsDTO
     {

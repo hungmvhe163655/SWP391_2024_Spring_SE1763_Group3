@@ -1,4 +1,6 @@
-﻿namespace Entities.Exceptions
+﻿using Entities.Exceptions.BaseClass;
+
+namespace Entities.Exceptions
 {
     public sealed class TenantNotFoundException : NotFoundException
     {

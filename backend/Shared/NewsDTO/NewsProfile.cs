@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
-using Shared.NewsDTO;
-using Shared.RequestDTO;
 using Entities.Models;
+using Shared.NewsDTO;
 
 namespace Shared.BillStatusDTO
 {
     public class NewsProfile : Profile
     {
-        public  NewsProfile()
+        public NewsProfile()
         {
             CreateMap<CreateNewsDTO, News>()
             .ForMember(des => des.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
@@ -16,8 +15,8 @@ namespace Shared.BillStatusDTO
             .ForMember(des => des.UpdatedAt, opt => opt.MapFrom(src => DateTime.Now));
 
             CreateMap<DeleteNewsDTO, News>();
-            
-            
+
+
         }
     }
 }

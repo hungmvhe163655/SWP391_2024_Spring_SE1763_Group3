@@ -1,6 +1,6 @@
 ﻿using BackendCore.Services.InternalServices.Contracts;
 using Entities.ErrorModel;
-using Entities.Exceptions;
+using Entities.Exceptions.BaseClass;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 
