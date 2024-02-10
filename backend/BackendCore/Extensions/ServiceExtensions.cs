@@ -1,4 +1,5 @@
-﻿using BackendCore.Services.InternalServices.Contracts;
+﻿using AspNetCoreRateLimit;
+using BackendCore.Services.InternalServices.Contracts;
 using LoggerService;
 
 namespace HomeManagementBackend.Extensions
@@ -17,5 +18,30 @@ namespace HomeManagementBackend.Extensions
                  .AllowAnyHeader()
                  .WithExposedHeaders("X-Pagination"));
              });
+        public static void ConfigureResponseCaching(this IServiceCollection services) =>
+            services.AddResponseCaching();
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
+            services.AddHttpCacheHeaders();
+
+        public static void ConfigureRateLimitingOptions(this IServiceCollection services)
+        {
+            var rateLimitRules = new List<RateLimitRule>
+            {
+                new() {
+                Endpoint = "*",
+                Limit = 100000,
+                Period = "5m"
+                }
+            };
+
+            services.Configure<IpRateLimitOptions>(
+                opt => { opt.GeneralRules = rateLimitRules; });
+
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+        }
     }
 }

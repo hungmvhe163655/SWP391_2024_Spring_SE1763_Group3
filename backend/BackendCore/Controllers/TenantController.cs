@@ -17,6 +17,7 @@ namespace BackendCore.Controllers
 {
     [Route("api/tenants")]
     [ApiController]
+    [ResponseCache(CacheProfileName = "120SecondsDuration")]
     public class TenantController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
@@ -32,33 +33,8 @@ namespace BackendCore.Controllers
         public async Task<IActionResult> GetTenants(
             [FromQuery] TenantParameter tenantParameters)
         {
-            // Define query without filtering first
-            var queryTenant = _context.Tenants.AsQueryable();
 
-            // Filter Gender
-            if (tenantParameters.IsMale != null)
-            {
-                queryTenant = queryTenant.FilterGender(tenantParameters.IsMale);
-            }
-
-            // Filter Created Date
-            if (tenantParameters.StartCreatedDate != null
-                && tenantParameters.EndCreatedDate != null)
-            {
-                if (!tenantParameters.ValidDateRange)
-                {
-                    throw new DateRangeBadRequestException();
-                }
-
-                queryTenant = queryTenant.FilterCreatedDate(
-                    tenantParameters.StartCreatedDate, tenantParameters.EndCreatedDate);
-            }
-
-            // Search By Name
-            queryTenant = queryTenant.Search(tenantParameters.SearchTerm!);
-
-            // Sort
-            queryTenant = queryTenant.Sort(tenantParameters.OrderBy!);
+            var queryTenant = BuildQuery(_context.Tenants, tenantParameters);
 
             var pagedTenant = await PagedList<Tenant>.ToPagedListAsync(queryTenant,
                 tenantParameters.PageNumber, tenantParameters.PageSize);
@@ -162,5 +138,41 @@ namespace BackendCore.Controllers
         private async Task<Tenant> FindTenant(Guid id)
             => await _context.Tenants.FindAsync(id)
              ?? throw new TenantNotFoundException(id);
+
+        private IQueryable<Tenant> BuildQuery(IQueryable<Tenant> query, 
+            TenantParameter parameters)
+        {
+            // Filter Gender
+            if (parameters.IsMale != null)
+            {
+                query = query.FilterGender(parameters.IsMale);
+            }
+
+            // Filter Created Date
+            if (parameters.StartCreatedDate != null && parameters.EndCreatedDate != null)
+            {
+                if (!parameters.ValidDateRange)
+                {
+                    throw new DateRangeBadRequestException();
+                }
+
+                query = query.FilterCreatedDate(parameters.StartCreatedDate, 
+                    parameters.EndCreatedDate);
+            }
+
+            // Search By Name
+            if (!string.IsNullOrEmpty(parameters.SearchTerm))
+            {
+                query = query.Search(parameters.SearchTerm);
+            }
+
+            // Sort
+            if (!string.IsNullOrEmpty(parameters.OrderBy))
+            {
+                query = query.Sort(parameters.OrderBy);
+            }
+
+            return query;
+        }
     }
 }

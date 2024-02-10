@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using BackendCore.Services.InternalServices.Contracts;
 using BackendCore.Utils;
 using HomeManagementBackend.Extensions;
@@ -39,6 +40,8 @@ namespace BackendCore
                 // Add services to the container.
                 builder.Services.ConfigureLoggerService();
                 builder.Services.ConfigureCors();
+                builder.Services.ConfigureResponseCaching();
+                builder.Services.ConfigureHttpCacheHeaders();
 
                 builder.Services.Configure<ApiBehaviorOptions>(options =>
                 {
@@ -49,9 +52,21 @@ namespace BackendCore
                 {
                     config.RespectBrowserAcceptHeader = true;
                     config.ReturnHttpNotAcceptable = true;
+
+                    // Only PATCH using Newtonsoft
                     config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+
+                    // Register for cache
+                    config.CacheProfiles.Add("120SecondsDuration", 
+                        new CacheProfile
+                        {
+                            Duration = 120
+                        });
                 });
 
+                builder.Services.AddMemoryCache();
+                builder.Services.ConfigureRateLimitingOptions();
+                builder.Services.AddHttpContextAccessor();
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
                 builder.Services.AddAutoMapper(typeof(AssemblyReference));
@@ -76,7 +91,13 @@ namespace BackendCore
                     ForwardedHeaders = ForwardedHeaders.All
                 });
 
+                app.UseIpRateLimiting();
+
                 app.UseCors("CorsPolicy");
+
+                app.UseResponseCaching();
+
+                app.UseHttpCacheHeaders();
 
                 app.UseAuthorization();
 
