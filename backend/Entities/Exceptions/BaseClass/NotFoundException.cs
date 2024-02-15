@@ -1,0 +1,10 @@
+﻿namespace Entities.Exceptions.BaseClass
+{
+    public abstract class NotFoundException : Exception
+    {
+        protected NotFoundException(string message)
+        : base(message)
+        { }
+    }
+
+}
