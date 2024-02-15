@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.NotificationDTO;
+using Shared.RequestDTO;
 using Shared.TenantDTO;
 using System.Text.Json;
 
@@ -17,13 +18,12 @@ namespace BackendCore.Controllers
 {
     [Route("api/tenants")]
     [ApiController]
-    [ResponseCache(CacheProfileName = "120SecondsDuration")]
-    public class TenantController : ControllerBase
+    public class TenantsController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
         private readonly IMapper _mapper;
 
-        public TenantController(HomeManagementDbContext context, IMapper mapper)
+        public TenantsController(HomeManagementDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -34,7 +34,8 @@ namespace BackendCore.Controllers
             [FromQuery] TenantParameter tenantParameters)
         {
 
-            var queryTenant = BuildQuery(_context.Tenants, tenantParameters);
+            var queryTenant = BuildQuery(_context.Tenants.AsNoTracking(), 
+                tenantParameters);
 
             var pagedTenant = await PagedList<Tenant>.ToPagedListAsync(queryTenant,
                 tenantParameters.PageNumber, tenantParameters.PageSize);
@@ -133,6 +134,31 @@ namespace BackendCore.Controllers
                 .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
 
             return Ok(notificationsDTO);
+        }
+
+        [HttpGet("{id:guid}/requests")]
+        public async Task<IActionResult> GetTenantRequests(Guid id)
+        {
+            var tenant = await _context.Tenants
+                .SingleOrDefaultAsync(t => t.Id == id)
+                ?? throw new TenantNotFoundException(id);
+
+            await _context.Entry(tenant)
+                .Collection(t => t.Requests)
+                .Query()
+                .Include(r => r.RequestStatus)
+                .Include(r => r.RequestType)
+                .LoadAsync();
+
+            // Multiple round trip which will cause performance issues,
+            // will adjust later
+            foreach (var request in tenant.Requests)
+                await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
+
+            var requestsDTO = _mapper
+                .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
+
+            return Ok(requestsDTO);
         }
 
         private async Task<Tenant> FindTenant(Guid id)

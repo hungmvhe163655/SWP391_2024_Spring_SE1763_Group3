@@ -21,9 +21,6 @@ namespace HomeManagementBackend.Extensions
         public static void ConfigureResponseCaching(this IServiceCollection services) =>
             services.AddResponseCaching();
 
-        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
-            services.AddHttpCacheHeaders();
-
         public static void ConfigureRateLimitingOptions(this IServiceCollection services)
         {
             var rateLimitRules = new List<RateLimitRule>

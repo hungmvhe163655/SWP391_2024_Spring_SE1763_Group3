@@ -1,11 +1,17 @@
 ﻿using Entities.Models;
+using LoggerService;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Extensions.Logging;
 using Repositories.Configurations;
 
 namespace BackendCore.Utils
 {
     public class HomeManagementDbContext : DbContext
     {
+        private readonly ILoggerFactory _loggerFactory = 
+            LoggerFactory.Create(builder => { builder.AddNLog(); });
+
         public HomeManagementDbContext()
         {
         }
@@ -35,6 +41,8 @@ namespace BackendCore.Utils
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
             optionsBuilder.AddInterceptors(new SoftDeleteInterceptor());
+
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,7 +57,6 @@ namespace BackendCore.Utils
 
             modelBuilder.Entity<BuildingResident>()
                 .HasQueryFilter(x => x.IsDeleted == false);
-
 
             // Init data
             modelBuilder.ApplyConfiguration(new TenantConfiguration());
