@@ -1,0 +1,179 @@
+﻿using AutoMapper;
+using BackendCore.Utils;
+using BackendCore.Utils.ActionFilters;
+using BackendCore.Utils.RepositoryExtensions;
+using BackendCore.Utils.RequestFeatures.EntityParameters;
+using BackendCore.Utils.RequestFeatures.Paging;
+using Entities.Exceptions;
+using Entities.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Shared.NotificationDTO;
+using Shared.RequestDTO;
+using Shared.RequestStatusDTO;
+using Shared.TenantDTO;
+using System.Text.Json;
+
+namespace BackendCore.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RequestStatusesController : ControllerBase
+    {
+        private readonly HomeManagementDbContext _context;
+        private readonly IMapper _mapper;
+
+        public RequestStatusesController(HomeManagementDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRequestStatuses(
+            [FromQuery] RequestStatusParameter requestStatusParameters)
+        {
+
+            var queryRequestStatus = BuildQuery(_context.RequestStatuses.AsNoTracking(),
+                requestStatusParameters);
+
+            var pageRequestStatus = await PagedList<RequestStatus>.ToPagedListAsync(queryRequestStatus,
+                requestStatusParameters.PageNumber, requestStatusParameters.PageSize);
+
+            var requestStatusesDTO = _mapper.Map<IEnumerable<ReadRequestStatusDTO>>(pageRequestStatus);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(pageRequestStatus.MetaData));
+
+            return Ok(requestStatusesDTO);
+        }
+
+
+
+        [HttpGet("{id:guid}", Name = "RequestStatusById")]
+        public async Task<IActionResult> GetRequestStatus(Guid id)
+        {
+            var requestStatus = await FindRequestStatus(id);
+
+            var requestStatusDTO = _mapper.Map<ReadRequestStatusDTO>(requestStatus);
+
+            return Ok(requestStatusDTO);
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> CreateRequestStatus(
+            [FromBody] CreateRequestStatusDTO createRequestStatusDTO)
+        {
+            var createRequestStatus = _mapper.Map<RequestStatus>(createRequestStatusDTO);
+
+            await _context.RequestStatuses.AddAsync(createRequestStatus);
+            await _context.SaveChangesAsync();
+
+            var createdRequestStatus = _mapper.Map<ReadRequestStatusDTO>(createRequestStatus);
+
+            return CreatedAtRoute("RequestStatusById", new { id = createdRequestStatus.Id }, createdRequestStatus);
+        }
+
+        [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> UpdateRequestStatus(Guid id,
+            [FromBody] UpdateRequestStatusDTO updateRequestStatusDTO)
+        {
+            var requestStatus = await FindRequestStatus(id);
+
+            _mapper.Map(updateRequestStatusDTO, requestStatus);
+            await _context.SaveChangesAsync();
+
+            return Ok("Update successful!");
+        }
+
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> PartiallyUpdateRequestStatus(Guid id,
+            [FromBody] JsonPatchDocument<UpdateRequestStatusDTO> patchDoc)
+        {
+            if (patchDoc is null)
+            {
+                return BadRequest("patchDoc object is null.");
+            }
+
+            var requestStatus = await FindRequestStatus(id);
+
+            var requestStatusToPatch = _mapper.Map<UpdateRequestStatusDTO>(requestStatus);
+
+            patchDoc.ApplyTo(requestStatusToPatch, ModelState);
+
+            TryValidateModel(requestStatusToPatch);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            _mapper.Map(requestStatusToPatch, requestStatus);
+            await _context.SaveChangesAsync();
+
+            return Ok("Partially update successful!");
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteRequestStatus(Guid id)
+        {
+            var DeleteRequestStatus = await FindRequestStatus(id);
+
+            _context.RequestStatuses.Remove(DeleteRequestStatus);
+            await _context.SaveChangesAsync();
+
+            return Ok("Delete successful!");
+        }
+
+        [HttpGet("{id:guid}/notifications")]
+        public async Task<IActionResult> GetRequestStatusNotifications(Guid id)
+        {
+            var requestStatus = await _context.RequestStatuses
+                .Include(rs => rs.Notifications)
+                .FirstOrDefaultAsync(t => t.Id == id)
+                ?? throw new RequestStatusNotFoundException(id);
+
+            var notificationsDTO = _mapper
+                .Map<IEnumerable<ReadNotificationDTO>>(requestStatus.Notifications);
+
+            return Ok(notificationsDTO);
+        }
+
+        [HttpGet("{id:guid}/requests")]
+        public async Task<IActionResult> GetRequestStatusRequests(Guid id)
+        {
+            var requestStatus = await _context.RequestStatuses
+                .SingleOrDefaultAsync(rs => rs.Id == id)
+                ?? throw new RequestStatusNotFoundException(id);
+
+            await _context.Entry(requestStatus)
+                .Collection(t => t.Requests)
+                .Query()
+                .Include(r => r.RequestStatus)
+                .Include(r => r.RequestType)
+                .LoadAsync();
+
+            // Multiple round trip which will cause performance issues,
+            // will adjust later
+            foreach (var request in requestStatus.Requests)
+                await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
+
+            var requestsDTO = _mapper
+                .Map<IEnumerable<ReadRequestDTO>>(requestStatus.Requests);
+
+            return Ok(requestsDTO);
+        }
+
+        private async Task<RequestStatus> FindRequestStatus(Guid id)
+            => await _context.RequestStatuses.FindAsync(id)
+             ?? throw new TenantNotFoundException(id);
+
+        private IQueryable<RequestStatus> BuildQuery(IQueryable<RequestStatus> query,
+            RequestStatusParameter parameters)
+        {
+         
+            return query;
+        }
+    }
+}
+

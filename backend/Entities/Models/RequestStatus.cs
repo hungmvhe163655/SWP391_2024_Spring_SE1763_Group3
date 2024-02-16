@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 
 /**
  * Class for Request Status, this is use for entity framework to generate database.
@@ -13,12 +16,18 @@ namespace Entities.Models
 {
     public class RequestStatus
     {
-        public int Id { get; set; }
+        public Guid? Id { get; set; }
 
         [MaxLength(255)]
         public string Status { get; set; } = null!;
 
         // Many Requests
+        public virtual ICollection<Contract> Contracts { get; set; } = null!;
         public virtual ICollection<Request> Requests { get; set; } = null!;
+        public virtual ICollection<Notification> Notifications { get; set; } = null!;
+
     }
 }
+
+
+
