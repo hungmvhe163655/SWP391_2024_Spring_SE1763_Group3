@@ -1,6 +1,7 @@
 using AspNetCoreRateLimit;
 using BackendCore.Services.InternalServices.Contracts;
 using BackendCore.Utils;
+using BackendCore.Utils.ActionFilters;
 using HomeManagementBackend.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,6 @@ namespace BackendCore
         {
             // Early init of NLog to allow startup and exception logging, before host is built
             var logger = LogManager.Setup()
-                .LoadConfigurationFromAppSettings()
                 .GetCurrentClassLogger();
             logger.Debug("init main");
 
@@ -41,7 +41,6 @@ namespace BackendCore
                 builder.Services.ConfigureLoggerService();
                 builder.Services.ConfigureCors();
                 builder.Services.ConfigureResponseCaching();
-                builder.Services.ConfigureHttpCacheHeaders();
 
                 builder.Services.Configure<ApiBehaviorOptions>(options =>
                 {
@@ -55,15 +54,9 @@ namespace BackendCore
 
                     // Only PATCH using Newtonsoft
                     config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-
-                    // Register for cache
-                    config.CacheProfiles.Add("120SecondsDuration", 
-                        new CacheProfile
-                        {
-                            Duration = 120
-                        });
                 });
 
+                builder.Services.AddScoped<ValidationFilterAttribute>();
                 builder.Services.AddMemoryCache();
                 builder.Services.ConfigureRateLimitingOptions();
                 builder.Services.AddHttpContextAccessor();
@@ -93,15 +86,13 @@ namespace BackendCore
 
                 app.UseIpRateLimiting();
 
+                app.MapControllers();
+
                 app.UseCors("CorsPolicy");
-
-                app.UseResponseCaching();
-
-                app.UseHttpCacheHeaders();
 
                 app.UseAuthorization();
 
-                app.MapControllers();
+                app.UseResponseCaching();
 
                 app.ConfigureExceptionHandler(
                     app.Services.GetRequiredService<ILoggerManager>());
