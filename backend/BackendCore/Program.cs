@@ -1,6 +1,7 @@
 using AspNetCoreRateLimit;
 using BackendCore.Services.InternalServices.Contracts;
 using BackendCore.Utils;
+using BackendCore.Utils.ActionFilters;
 using HomeManagementBackend.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +56,7 @@ namespace BackendCore
                     config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
                 });
 
+                builder.Services.AddScoped<ValidationFilterAttribute>();
                 builder.Services.AddMemoryCache();
                 builder.Services.ConfigureRateLimitingOptions();
                 builder.Services.AddHttpContextAccessor();
