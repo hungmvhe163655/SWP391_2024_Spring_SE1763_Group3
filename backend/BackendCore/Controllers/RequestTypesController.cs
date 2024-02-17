@@ -51,7 +51,7 @@ namespace BackendCore.Controllers
 
 
         [HttpGet("{id:guid}", Name = "RequestTypeById")]
-        public async Task<IActionResult> GetRequestType(Guid id)
+        public async Task<IActionResult> GetRequestType(int id)
         {
             var requestType = await FindRequestType(id);
 
@@ -77,7 +77,7 @@ namespace BackendCore.Controllers
 
         [HttpPut("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateRequestType(Guid id,
+        public async Task<IActionResult> UpdateRequestType(int id,
             [FromBody] UpdateRequestTypeDTO updateRequestTypeDTO)
         {
             var requestType = await FindRequestType(id);
@@ -89,7 +89,7 @@ namespace BackendCore.Controllers
         }
 
         [HttpPatch("{id:guid}")]
-        public async Task<IActionResult> PartiallyUpdateRequestType(Guid id,
+        public async Task<IActionResult> PartiallyUpdateRequestType(int id,
             [FromBody] JsonPatchDocument<UpdateRequestTypeDTO> patchDoc)
         {
             if (patchDoc is null)
@@ -114,7 +114,7 @@ namespace BackendCore.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteRequestType(Guid id)
+        public async Task<IActionResult> DeleteRequestType(int id)
         {
             var DeleteRequestType = await FindRequestType(id);
 
@@ -124,11 +124,11 @@ namespace BackendCore.Controllers
             return Ok("Delete successful!");
         }
 
-        [HttpGet("{id:guid}/notifications")]
-        public async Task<IActionResult> GetRequestTypeNotifications(Guid id)
+        /*[HttpGet("{id:guid}/notifications")]
+        public async Task<IActionResult> GetRequestTypeNotifications(int id)
         {
             var requestType = await _context.RequestTypes
-                .Include(rs => rs.Notifications)
+                .Include(rt => rt.Notifications)
                 .FirstOrDefaultAsync(t => t.Id == id)
                 ?? throw new RequestTypeNotFoundException(id);
 
@@ -136,10 +136,10 @@ namespace BackendCore.Controllers
                 .Map<IEnumerable<ReadNotificationDTO>>(requestType.Notifications);
 
             return Ok(notificationsDTO);
-        }
+        }*/
 
         [HttpGet("{id:guid}/requests")]
-        public async Task<IActionResult> GetRequestTypeRequests(Guid id)
+        public async Task<IActionResult> GetRequestTypeRequests(int id)
         {
             var requestType = await _context.RequestTypes
                 .SingleOrDefaultAsync(rs => rs.Id == id)
@@ -163,7 +163,7 @@ namespace BackendCore.Controllers
             return Ok(requestsDTO);
         }
 
-        private async Task<RequestType> FindRequestType(Guid id)
+        private async Task<RequestType> FindRequestType(int id)
             => await _context.RequestTypes.FindAsync(id)
              ?? throw new RequestTypeNotFoundException(id);
 
