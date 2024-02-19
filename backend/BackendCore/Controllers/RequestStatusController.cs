@@ -41,6 +41,7 @@ namespace BackendCore.Controllers
 
 
 
+
         [HttpGet("{id:int}", Name = "RequestStatusById")]
         public async Task<IActionResult> GetRequestStatus(int id)
         {
@@ -113,45 +114,6 @@ namespace BackendCore.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Delete successful!");
-        }
-
-        [HttpGet("{id:int}/notifications")]
-        public async Task<IActionResult> GetRequestStatusNotifications(int id)
-        {
-            var requestStatus = await _context.RequestStatuses
-                .Include(rs => rs.Notifications)
-                .FirstOrDefaultAsync(t => t.Id == id)
-                ?? throw new RequestStatusNotFoundException(id);
-
-            var notificationsDTO = _mapper
-                .Map<IEnumerable<ReadNotificationDTO>>(requestStatus.Notifications);
-
-            return Ok(notificationsDTO);
-        }
-
-        [HttpGet("{id:int}/requests")]
-        public async Task<IActionResult> GetRequestStatusRequests(int id)
-        {
-            var requestStatus = await _context.RequestStatuses
-                .SingleOrDefaultAsync(rs => rs.Id == id)
-                ?? throw new RequestStatusNotFoundException(id);
-
-            await _context.Entry(requestStatus)
-                .Collection(t => t.Requests)
-                .Query()
-                .Include(r => r.RequestStatus)
-                .Include(r => r.RequestType)
-                .LoadAsync();
-
-            // Multiple round trip which will cause performance issues,
-            // will adjust later
-            foreach (var request in requestStatus.Requests)
-                await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
-
-            var requestsDTO = _mapper
-                .Map<IEnumerable<ReadRequestDTO>>(requestStatus.Requests);
-
-            return Ok(requestsDTO);
         }
 
         private async Task<RequestStatus> FindRequestStatus(int id)

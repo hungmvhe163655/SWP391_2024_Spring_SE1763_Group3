@@ -16,7 +16,7 @@ namespace Entities.Models
 {
     public class RequestStatus
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(255)]
         public string Status { get; set; } = null!;
