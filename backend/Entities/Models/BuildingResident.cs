@@ -24,7 +24,7 @@ namespace Entities.Models
         public string FullName { get; set; } = null!;
 
         [MaxLength(100)]
-        public string PhoneNumber { get; set; } = null!;
+        public string? PhoneNumber { get; set; } = null!;
 
         [MaxLength(100)]
         public string Password { get; set; } = null!;
@@ -39,7 +39,7 @@ namespace Entities.Models
 
         // Picture will be save on GG drive instead
         [MaxLength(1000)]
-        public string PortraitPictureUrl { get; set; } = null!;
+        public string? PortraitPictureUrl { get; set; } = null!;
 
         // One Role
         public int RoleId { get; set; }

@@ -10,18 +10,18 @@ import {
 } from "@/components/ui/card";
 
 import { cn } from "@/lib/utils";
-import { LoginForm } from "./loginForm";
 import Link from "next/link";
+import { RegisterForm } from "./RegisterForm";
 
-export default function LoginCard() {
+export default function RegisterCard() {
   return (
     <Card className="w-[350px]">
       <CardHeader className={cn("text-center")}>
-        <CardTitle className={cn("text-2xl")}>Login</CardTitle>
-        <CardDescription>Login to your account now !</CardDescription>
+        <CardTitle className={cn("text-2xl")}>Register</CardTitle>
+        <CardDescription>Register your account now !</CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm />
+        <RegisterForm />
       </CardContent>
       <CardFooter>
         <ul>
@@ -30,9 +30,9 @@ export default function LoginCard() {
           </li>
           <li className="pt-1">
             <p>
-              Don&apos;t have an account?{" "}
-              <Link className="text-red-500 hover:text-red-700" href="#">
-                Register now
+              Already have an account?
+              <Link className="text-red-500 hover:text-red-700" href="/login">
+                Login
               </Link>
             </p>
           </li>

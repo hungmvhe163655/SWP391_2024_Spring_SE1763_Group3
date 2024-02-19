@@ -1,4 +1,4 @@
-import LoginCard from "./loginCard";
+import LoginCard from "./LoginCard";
 
 const Login = () => {
   return (
