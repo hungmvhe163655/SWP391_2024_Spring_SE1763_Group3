@@ -1,6 +1,15 @@
-﻿namespace Shared.ContractDTO
+﻿using AutoMapper;
+using Entities.Models;
+
+namespace Shared.ContractDTO
 {
-    internal class ContractProfile
+    public class ContractProfile : Profile
     {
+        public ContractProfile()
+        {
+            CreateMap<Contract, ReadContractDTO>().ReverseMap();
+            CreateMap<CreateContractDTO, Contract>();
+            CreateMap<UpdateContractDTO, Contract>().ReverseMap();
+        }
     }
 }

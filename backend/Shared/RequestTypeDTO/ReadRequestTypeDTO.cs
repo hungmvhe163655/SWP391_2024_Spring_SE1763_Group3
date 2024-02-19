@@ -2,7 +2,7 @@
 {
     public record ReadRequestTypeDTO
    (
-        Guid Id,
+        int Id,
         string Type
     );
 }
