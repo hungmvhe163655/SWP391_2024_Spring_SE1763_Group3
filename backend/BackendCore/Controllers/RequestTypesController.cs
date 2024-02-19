@@ -50,7 +50,7 @@ namespace BackendCore.Controllers
 
 
 
-        [HttpGet("{id:guid}", Name = "RequestTypeById")]
+        [HttpGet("{id:int}", Name = "RequestTypeById")]
         public async Task<IActionResult> GetRequestType(int id)
         {
             var requestType = await FindRequestType(id);
@@ -75,7 +75,7 @@ namespace BackendCore.Controllers
             return CreatedAtRoute("RequestTypeById", new { id = createdRequestType.Id }, createdRequestType);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("{id:int}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateRequestType(int id,
             [FromBody] UpdateRequestTypeDTO updateRequestTypeDTO)
@@ -88,7 +88,7 @@ namespace BackendCore.Controllers
             return Ok("Update successful!");
         }
 
-        [HttpPatch("{id:guid}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> PartiallyUpdateRequestType(int id,
             [FromBody] JsonPatchDocument<UpdateRequestTypeDTO> patchDoc)
         {
@@ -113,7 +113,7 @@ namespace BackendCore.Controllers
             return Ok("Partially update successful!");
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteRequestType(int id)
         {
             var DeleteRequestType = await FindRequestType(id);
@@ -138,7 +138,7 @@ namespace BackendCore.Controllers
             return Ok(notificationsDTO);
         }*/
 
-        [HttpGet("{id:guid}/requests")]
+        [HttpGet("{id:int}/requests")]
         public async Task<IActionResult> GetRequestTypeRequests(int id)
         {
             var requestType = await _context.RequestTypes

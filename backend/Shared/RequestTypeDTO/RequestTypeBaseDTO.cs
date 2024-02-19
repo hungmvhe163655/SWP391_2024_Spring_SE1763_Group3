@@ -9,12 +9,6 @@ namespace Shared.RequestTypeDTO
         [MaxLength(100, ErrorMessage = "Maximum length for the Type is 100 characters.")]
         public string Type { get; init; }
 
-        /*[Range(1, 3, ErrorMessage = "Role Id is not valid")]
-        public int RoleId { get; init; }*/
-
-        public string PortraitPictureUrl { get; init; }
-
-        public Guid? RoomId { get; init; }
     }
 }
 
