@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,18 +26,23 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 
+const api = process.env.NEXT_PUBLIC_TENANT_API_URL;
+
 const formSchema = z
   .object({
-    fullname: z.string().min(1).max(255),
-    email: z.string().min(1).max(255).email(),
+    fullname: z.string().min(1, { message: "Full name is required" }).max(255),
+    email: z.string().min(1, { message: "Email is required" }).max(255).email(),
     gender: z.enum(["male", "female"], {
       required_error: "You need to select a gender.",
     }),
     dob: z.date({
       required_error: "A date of birth is required.",
     }),
-    password: z.string().min(4).max(255),
-    confirmPassword: z.string().min(4).max(255),
+    password: z
+      .string()
+      .min(8, { message: "Password must at least 4 characters" })
+      .max(255, { message: "Password must at max 255 characters" }),
+    confirmPassword: z.string(),
   })
   .refine((fields) => fields.password === fields.confirmPassword, {
     path: ["confirmPassword"],
@@ -58,8 +62,41 @@ export function RegisterForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!api) {
+      console.error("API URL is not defined");
+      return;
+    }
+
+    var tenant = {
+      fullname: values.fullname,
+      password: values.password,
+      email: values.email,
+      dob: values.dob,
+      isMale: values.gender === "male",
+      roleId: 1,
+      portraitPictureUrl: "",
+      createdAt: new Date(),
+      roomId: null,
+    };
+    console.log(JSON.stringify(tenant));
+
+    try {
+      const response = await fetch(api, {
+        headers: {
+          Accept: "application/json, text/plain",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+        method: "POST",
+        body: JSON.stringify(tenant),
+      });
+
+      // Handle response if necessary
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -125,27 +162,28 @@ export function RegisterForm() {
               <FormLabel>Date of birth</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-[240px] justify-start text-left font-normal",
+                      !field.value && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {field.value ? (
+                      format(field.value, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent align="start" className=" w-auto p-0">
                   <Calendar
                     mode="single"
                     selected={field.value}
+                    captionLayout="dropdown-buttons"
+                    fromYear={1900}
+                    toYear={new Date().getFullYear()}
                     onSelect={field.onChange}
                     disabled={(date: Date) =>
                       date > new Date() || date < new Date("1900-01-01")
@@ -207,7 +245,7 @@ export function RegisterForm() {
           )}
         />
         <Button type="submit" className="w-full">
-          Login
+          Register
         </Button>
       </form>
     </Form>
