@@ -18,7 +18,7 @@ namespace Entities.Models
         public DateTime Dob { get; set; }
 
         [MaxLength(500)]
-        public string Address { get; set; } = null!;
+        public string? Address { get; set; } = null!;
 
         public Guid? RoomId { get; set; }
         public virtual Room? Room { get; set; } = null!;
