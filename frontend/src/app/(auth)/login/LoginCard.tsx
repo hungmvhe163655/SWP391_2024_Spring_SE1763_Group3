@@ -30,7 +30,7 @@ export default function LoginCard() {
           </li>
           <li className="pt-1">
             <p>
-              Don&apos;t have an account?{" "}
+              Don&apos;t have an account?&nbsp;
               <Link
                 className="text-red-500 hover:text-red-700"
                 href="/register"

@@ -30,7 +30,7 @@ export default function RegisterCard() {
           </li>
           <li className="pt-1">
             <p>
-              Already have an account?
+              Already have an account?&nbsp;
               <Link className="text-red-500 hover:text-red-700" href="/login">
                 Login
               </Link>
