@@ -8,8 +8,9 @@ namespace Shared.BuildingServiceDTO
 {
     public record ReadBuildingServiceDTO
     (   Guid Id,
-        string FullName,
+        string Name,
         decimal PricePerMonth,
         Guid BuildingId
+
     );
 }

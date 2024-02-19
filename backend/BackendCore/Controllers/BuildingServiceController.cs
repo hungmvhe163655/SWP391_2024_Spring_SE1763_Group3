@@ -40,12 +40,12 @@ namespace BackendCore.Controllers
             var pagedBuildingService = await PagedList<BuildingService>.ToPagedListAsync(queryBuildingService,
                 buildingServiceParameters.PageNumber, buildingServiceParameters.PageSize);
 
-            var BuildingServicesDTO = _mapper.Map<IEnumerable<ReadBuildingServiceDTO>>(pagedBuildingService);
+            var buildingServicesDTO = _mapper.Map<IEnumerable<ReadBuildingServiceDTO>>(pagedBuildingService);   
 
             Response.Headers.Add("X-Pagination",
                 JsonSerializer.Serialize(pagedBuildingService.MetaData));
 
-            return Ok(BuildingServicesDTO);
+            return Ok(buildingServicesDTO);
         }
 
         [HttpGet("{id:guid}", Name = "BuildingServiceById")]
@@ -53,9 +53,9 @@ namespace BackendCore.Controllers
         {
             var buildingService = await FindBuildingService(id);
 
-            var BuildingServiceDTO = _mapper.Map<ReadTenantDTO>(buildingService);
+            var buildingServiceDTO = _mapper.Map<ReadBuildingServiceDTO>(buildingService);
 
-            return Ok(BuildingServiceDTO);
+            return Ok(buildingServiceDTO);
         }
 
         [HttpPost]

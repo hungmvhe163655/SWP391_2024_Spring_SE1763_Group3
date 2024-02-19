@@ -11,14 +11,10 @@ namespace Shared.BuildingServiceDTO
     {
         [Required(ErrorMessage = "Full name is required")]
         [MaxLength(255, ErrorMessage = "Maximum length for the Name is 255 characters.")]
-        public string FullName { get; init; }
+        public string Name { get; init; }
 
+        public decimal PricePerMonth { get; init; }
 
-        [Range(1, 3, ErrorMessage = "Role Id is not valid")]
-        public int RoleId { get; init; }
-
-        public bool IsDeleted { get; init; }
-
-        public Guid? RoomId { get; init; }
+        public Guid? BuildingId { get; init; }
     }
 }
