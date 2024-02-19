@@ -25,6 +25,8 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const api = process.env.NEXT_PUBLIC_TENANT_API_URL;
 
@@ -50,6 +52,8 @@ const formSchema = z
   });
 
 export function RegisterForm() {
+  const { toast } = useToast();
+
   // 1. Define form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,10 +65,19 @@ export function RegisterForm() {
     },
   });
 
+  function ErrorPopup(message: string) {
+    toast({
+      variant: "destructive",
+      title: "Uh oh! Something went wrong.",
+      description: message,
+      action: <ToastAction altText="Try again">Try again</ToastAction>,
+    });
+  }
+
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!api) {
-      console.error("API URL is not defined");
+      ErrorPopup("Something went wrong!");
       return;
     }
 
@@ -91,11 +104,24 @@ export function RegisterForm() {
         body: JSON.stringify(tenant),
       });
 
-      // Handle response if necessary
+      // Check if the response is successful
+      if (!response.ok) {
+        // Handle different error statuses
+        if (response.status === 400) {
+          throw new Error("Bad Request: Please check your input data.");
+        }
+
+        throw new Error(
+          "Server Error: Something went wrong on the server side."
+        );
+      }
+
+      // Parse the response JSON
       const data = await response.json();
       console.log(data);
     } catch (error) {
-      console.error(error);
+      // Handle network errors and other exceptions
+      ErrorPopup((error as Error).message || "Something went wrong!");
     }
   }
 
