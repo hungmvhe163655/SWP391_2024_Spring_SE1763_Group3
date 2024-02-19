@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BackendCore.Utils.RepositoryExtensions
 {
-    public static class TenantQueryableExtension
+    public static class TenantQueryableExtension 
     {
         public static IQueryable<Tenant> FilterGender(this IQueryable<Tenant> tenants,
             bool? isMale)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared.TenantDTO;
 
 namespace Shared.BuildingServiceDTO
 {
@@ -7,8 +8,9 @@ namespace Shared.BuildingServiceDTO
     {
         public BuildingServiceProfile()
         {
-            CreateMap<UpdateBuildingServiceDTO, BuildingService>();
+            CreateMap<BuildingService, ReadBuildingServiceDTO>().ReverseMap();
             CreateMap<CreateBuildingServiceDTO, BuildingService>();
+            CreateMap<UpdateBuildingServiceDTO, BuildingService>().ReverseMap();
         }
     }
 }

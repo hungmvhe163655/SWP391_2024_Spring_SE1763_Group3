@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendCore.Utils.RequestFeatures.Paging
 {
@@ -30,5 +31,6 @@ namespace BackendCore.Utils.RequestFeatures.Paging
 
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }
+
     }
 }
