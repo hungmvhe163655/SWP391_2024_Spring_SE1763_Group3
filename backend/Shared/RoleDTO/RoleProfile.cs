@@ -7,7 +7,9 @@ namespace Shared.RoleDTO
     {
         public RoleProfile()
         {
+            CreateMap<Role, ReadRoleDTO>().ReverseMap();
             CreateMap<CreateRoleDTO, Role>();
+            CreateMap<UpdateRoleDTO, Role>().ReverseMap();
         }
     }
 }
