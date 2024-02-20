@@ -35,7 +35,7 @@ export default function LoginCard() {
                 className="text-red-500 hover:text-red-700"
                 href="/register"
               >
-                Register now
+                Register Now
               </Link>
             </p>
           </li>
