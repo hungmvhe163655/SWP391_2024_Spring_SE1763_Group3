@@ -27,6 +27,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const api = process.env.NEXT_PUBLIC_TENANT_API_URL;
 
@@ -53,6 +54,7 @@ const formSchema = z
 
 export function RegisterForm() {
   const { toast } = useToast();
+  const router = useRouter();
 
   // 1. Define form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -118,7 +120,11 @@ export function RegisterForm() {
 
       // Parse the response JSON
       const data = await response.json();
-      console.log(data);
+      toast({
+        variant: "success",
+        description: "Hello " + data.fullname,
+      });
+      router.push(`/tenants/${data.tenantid}`);
     } catch (error) {
       // Handle network errors and other exceptions
       ErrorPopup((error as Error).message || "Something went wrong!");
