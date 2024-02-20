@@ -138,7 +138,8 @@ namespace BackendCore.Controllers
             return Ok(notificationsDTO);
         }*/
 
-        [HttpGet("{id:int}/requests")]
+        [HttpGet("{id:int" +
+            "}/requests")]
         public async Task<IActionResult> GetRequestTypeRequests(int id)
         {
             var requestType = await _context.RequestTypes
