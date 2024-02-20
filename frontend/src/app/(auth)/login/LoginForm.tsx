@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { date, z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
-const api = process.env.NEXT_PUBLIC_TENANT_API_URL;
+const api = process.env.NEXT_PUBLIC_AUTH_API_URL;
 
 const formSchema = z.object({
   email: z
@@ -77,6 +77,11 @@ export function LoginForm() {
           throw new Error("Bad Request: Please check your input data.");
         }
 
+        if (response.status === 401) {
+          const errorMessage = await response.text(); // Extract error message from response
+          throw new Error(`Unauthorized: ${errorMessage}`);
+        }
+
         throw new Error(
           "Server Error: Something went wrong on the server side."
         );
@@ -84,9 +89,10 @@ export function LoginForm() {
 
       // Parse the response JSON
       const data = await response.json();
+
       toast({
         variant: "success",
-        description: "Hello " + data.fullname,
+        description: "Hello " + data.fullName,
       });
       router.push(`/tenants/${data.tenantid}`);
     } catch (error) {

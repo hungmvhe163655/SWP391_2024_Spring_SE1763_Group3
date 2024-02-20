@@ -17,7 +17,7 @@ namespace BackendCore.Controllers
         public string Email { get; init; }
 
         [Required(ErrorMessage = "Password is required")]
-        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
+        [MinLength(3, ErrorMessage = "Password must be at least 3 characters long")]
         [MaxLength(100, ErrorMessage = "Maximum length for the Password is 100 characters.")]
         public string Password { get; init; }
     }
@@ -50,7 +50,7 @@ namespace BackendCore.Controllers
                 return Unauthorized("Invalid password");
             }
 
-            return Ok("Authentication successful.");
+            return Ok(user);
         }
     }
 }

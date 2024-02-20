@@ -122,7 +122,7 @@ export function RegisterForm() {
       const data = await response.json();
       toast({
         variant: "success",
-        description: "Hello " + data.fullname,
+        description: "Hello " + data.fullName,
       });
       router.push(`/tenants/${data.tenantid}`);
     } catch (error) {
