@@ -6,32 +6,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import React from 'react';
 
-function news() {
-    return (
-        <Card className="w-[350px]">
-          <CardHeader>
-            <CardTitle>Create News</CardTitle>
-            <CardDescription></CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name">Title</Label>
-                  <Input id="name" placeholder="Name of your project" />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                <Textarea placeholder="Type your message here." />
-                </div>
+function News() {
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <Card className="w-[400px] h-[500px]">
+        <CardHeader>
+          <CardTitle>Create News</CardTitle>
+          <CardDescription></CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="name">Title</Label>
+                <Input id="name" placeholder="Enter title of news" />
               </div>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline">Cancel</Button>
-            <Button>Create</Button>
-          </CardFooter>
-        </Card>
-      )
+              <div className="flex flex-col space-y-1.5">
+                <Textarea placeholder="Type your message here." />
+              </div>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline">Cancel</Button>
+          <Button>Create</Button>
+        </CardFooter>
+      </Card>
+    </div>
+  );
 }
 
-export default news;
+export default News;
