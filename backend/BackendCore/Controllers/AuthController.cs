@@ -1,54 +1,70 @@
-﻿using BackendCore.Utils;
+﻿using AutoMapper;
+using BackendCore.Services.InternalServices.Contracts;
+using BackendCore.Utils;
+using BackendCore.Utils.ActionFilters;
+using Entities.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.AuthenticationDTO;
 using System.ComponentModel.DataAnnotations;
 
 
 namespace BackendCore.Controllers
 {
-    public record AuthenticationInfo
-    {
-
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email format")]
-        public string Email { get; init; } = null!;
-
-        [Required(ErrorMessage = "Password is required")]
-        [MinLength(3, ErrorMessage = "Password must be at least 3 characters long")]
-        [MaxLength(100, ErrorMessage = "Maximum length for the Password is 100 characters.")]
-        public string Password { get; init; } = null!;
-    }
-
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly HomeManagementDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<Tenant> _userManager;
+        private readonly IAuthenticationService _service;
 
-        public AuthController(HomeManagementDbContext context)
+        public AuthController(IMapper mapper, UserManager<Tenant> userManager, IAuthenticationService service)
         {
-            _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
+            _service = service;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Login([FromBody] AuthenticationInfo info)
-        //{
-        //    // Find user by email
-        //    var user = await _context.Tenants.FirstOrDefaultAsync(u => u.Email == info.Email);
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Register([FromBody] TenantRegistrationDTO tenantRegistration)
+        {
+            var user = _mapper.Map<Tenant>(tenantRegistration);
 
-        //    if (user == null)
-        //    {
-        //        return Unauthorized("Tenant not found");
-        //    }
+            var result = await _userManager.CreateAsync(user, tenantRegistration.Password);
 
-        //    // Verify password
-        //    if (user.Password != info.Password)
-        //    {
-        //        return Unauthorized("Invalid password");
-        //    }
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
 
-        //    return Ok(user);
-        //}
+            await _userManager.AddToRolesAsync(user, tenantRegistration.Roles);
+
+            return StatusCode(201, new
+            {
+                Token = await _service.CreateToken()
+            });
+        }
+
+        [HttpPost("login")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Authenticate([FromBody] LoginDTO user)
+        {
+
+            if (!await _service.ValidateUser(user))
+                return Unauthorized();
+
+            return Ok(new
+            {
+                Token = await _service.CreateToken()
+            });
+        }
     }
 
 

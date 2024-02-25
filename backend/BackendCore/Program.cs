@@ -42,6 +42,8 @@ namespace BackendCore
                 builder.Services.ConfigureLoggerService();
                 builder.Services.ConfigureCors();
                 builder.Services.ConfigureResponseCaching();
+                builder.Services.ConfigureLoginService();
+                builder.Services.ConfigureSwagger();
 
                 builder.Services.Configure<ApiBehaviorOptions>(options =>
                 {
@@ -61,13 +63,13 @@ namespace BackendCore
                 builder.Services.AddMemoryCache();
                 builder.Services.ConfigureRateLimitingOptions();
                 builder.Services.AddHttpContextAccessor();
-                builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen();
+                builder.Services.AddEndpointsApiExplorer();            
                 builder.Services.AddAutoMapper(typeof(AssemblyReference));
                 builder.Services.AddDbContext<HomeManagementDbContext>();
                 builder.Services.AddAuthentication();
                 builder.Services.ConfigureIdentity();
                 builder.Services.ConfigureJWT(builder.Configuration);
+                builder.Services.AddJwtConfiguration(builder.Configuration);
 
                 var app = builder.Build();
 
@@ -102,6 +104,13 @@ namespace BackendCore
 
                 app.ConfigureExceptionHandler(
                     app.Services.GetRequiredService<ILoggerManager>());
+
+                app.UseSwagger();
+                app.UseSwaggerUI(s =>
+                {
+                    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Home Management API v1");
+                });
+
 
                 app.Run();
             }

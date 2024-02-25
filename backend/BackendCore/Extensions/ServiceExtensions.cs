@@ -1,11 +1,14 @@
 ﻿using AspNetCoreRateLimit;
+using BackendCore.Services.InternalServices;
 using BackendCore.Services.InternalServices.Contracts;
 using BackendCore.Utils;
+using Entities.ConfigurationModels;
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace HomeManagementBackend.Extensions
@@ -14,6 +17,10 @@ namespace HomeManagementBackend.Extensions
     {
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerManager, LoggerManager>();
+
+
+        public static void ConfigureLoginService(this IServiceCollection services) =>
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
         public static void ConfigureCors(this IServiceCollection services) =>
              services.AddCors(options =>
@@ -49,24 +56,55 @@ namespace HomeManagementBackend.Extensions
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            var builder = services.AddIdentity<BuildingResident, IdentityRole>(o =>
+            services.AddIdentityCore<BuildingResident>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 10;
+
                 o.User.RequireUniqueEmail = true;
             })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<HomeManagementDbContext>()
+            .AddDefaultTokenProviders();
+
+            services.AddIdentityCore<Tenant>(o =>
+            {
+                o.Password.RequireDigit = true;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 10;
+
+                o.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<HomeManagementDbContext>()
+            .AddDefaultTokenProviders();
+
+            services.AddIdentityCore<HomeManager>(o =>
+            {
+                o.Password.RequireDigit = true;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 10;
+
+                o.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<HomeManagementDbContext>()
             .AddDefaultTokenProviders();
         }
 
-        public static void ConfigureJWT(this IServiceCollection services, 
+        public static void ConfigureJWT(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SECRET"];
+            var jwtConfiguration = new JwtConfiguration();
+            configuration.Bind(jwtConfiguration.Section, jwtConfiguration);
+
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,12 +118,46 @@ namespace HomeManagementBackend.Extensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["validIssuer"],
-                    ValidAudience = jwtSettings["validAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+                    ValidIssuer = jwtConfiguration.ValidIssuer,
+                    ValidAudience = jwtConfiguration.ValidAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Secrete!))
                 };
             });
         }
 
+        public static void AddJwtConfiguration(this IServiceCollection services,
+            IConfiguration configuration) =>
+            services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Home Management API",
+                    Version = "v1"
+                });
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Place to add JWT with Bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement(){
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }, Name = "Bearer",
+                    },new List<string>()}
+                });
+            });
+        }
     }
 }
