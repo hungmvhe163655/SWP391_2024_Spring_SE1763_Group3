@@ -15,7 +15,7 @@ namespace Repositories.Configurations
                     CreatedAt = DateTime.Parse("2024-05-02"),
                     IsReaded = true,
                     Message = "Đóng tiền nhà tháng 12/2023",
-                    TenantId = Guid.Parse("B4E6EA80-F066-44F4-AA55-30E0A0FE30AF")
+                    TenantId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF"
                 },
                 new Notification
                 {
@@ -23,7 +23,7 @@ namespace Repositories.Configurations
                     CreatedAt = DateTime.Parse("2024-05-02"),
                     IsReaded = false,
                     Message = "Đóng tiền nhà tháng 12/2023",
-                    TenantId = Guid.Parse("F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F")
+                    TenantId = "F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F"
                 },
                 new Notification
                 {
@@ -31,7 +31,7 @@ namespace Repositories.Configurations
                     CreatedAt = DateTime.Parse("2024-05-02"),
                     IsReaded = false,
                     Message = "Đóng tiền nhà tháng 12/2023",
-                    TenantId = Guid.Parse("257862CB-BFD1-4D55-AB50-10D186E3E8F4")
+                    TenantId = "257862CB-BFD1-4D55-AB50-10D186E3E8F4"
                 });
         }
     }

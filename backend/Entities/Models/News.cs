@@ -28,7 +28,7 @@ namespace Entities.Models
         public string Description { get; set; } = null!;
 
         // One Home Manager
-        public Guid HomeManagerId { get; set; }
+        public string HomeManagerId { get; set; } = null!;
         public virtual HomeManager HomeManager { get; set; } = null!;
 
         // Many Buildings

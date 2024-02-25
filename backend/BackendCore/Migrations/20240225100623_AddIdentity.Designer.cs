@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendCore.Migrations
 {
     [DbContext(typeof(HomeManagementDbContext))]
-    [Migration("20240211083806_modifiedInheritance")]
-    partial class modifiedInheritance
+    [Migration("20240225100623_AddIdentity")]
+    partial class AddIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,17 +162,17 @@ namespace BackendCore.Migrations
                         new
                         {
                             Id = 1,
-                            Status = "Chưa trả"
+                            Status = "Not Paid"
                         },
                         new
                         {
                             Id = 2,
-                            Status = "Đã trả"
+                            Status = "Paid"
                         },
                         new
                         {
                             Id = 3,
-                            Status = "Quá hạn"
+                            Status = "Overdue"
                         });
                 });
 
@@ -201,8 +201,9 @@ namespace BackendCore.Migrations
                     b.Property<decimal>("ElectricityPricePerMonth")
                         .HasColumnType("money");
 
-                    b.Property<Guid>("HomeManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("HomeManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -232,7 +233,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Đây là mô tả mẫu cho tòa nhà.",
                             ElectricityPricePerMonth = 2675.0m,
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             IsDeleted = false,
                             Name = "Chung cư An Nhiên",
                             WaterPricePerMonth = 21000.0m
@@ -244,7 +245,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Mô tả khác cho tòa nhà.",
                             ElectricityPricePerMonth = 2500.0m,
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             IsDeleted = false,
                             Name = "Chung cư mini Lạc Quân",
                             WaterPricePerMonth = 22000.0m
@@ -256,7 +257,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Mô tả khác cho tòa nhà.",
                             ElectricityPricePerMonth = 2700.0m,
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3302"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302",
                             IsDeleted = false,
                             Name = "Tòa nhà 68",
                             WaterPricePerMonth = 15000.0m
@@ -268,7 +269,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Mô tả cho tòa nhà.",
                             ElectricityPricePerMonth = 3500.0m,
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3307"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3307",
                             IsDeleted = false,
                             Name = "Chung cư mini 102",
                             WaterPricePerMonth = 27000.0m
@@ -280,18 +281,36 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Mô tả cho tòa nhà.",
                             ElectricityPricePerMonth = 3400.0m,
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3310"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3310",
                             IsDeleted = false,
                             Name = "Trọ Vũ Bạch",
+                            WaterPricePerMonth = 20000.0m
+                        },
+                        new
+                        {
+                            Id = new Guid("ff2504e0-4f89-41d3-9a0c-0305e82c3312"),
+                            Address = "2223 Stupid Street",
+                            CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Mô tả cho tòa nhà.",
+                            ElectricityPricePerMonth = 3400.0m,
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3310",
+                            IsDeleted = false,
+                            Name = "ABC Apartment",
                             WaterPricePerMonth = 20000.0m
                         });
                 });
 
             modelBuilder.Entity("Entities.Models.BuildingResident", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -304,14 +323,15 @@ namespace BackendCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -319,32 +339,57 @@ namespace BackendCore.Migrations
                     b.Property<bool>("IsMale")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PortraitPictureUrl")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
 
-                    b.ToTable("BuildingResidents");
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BuildingResident");
 
@@ -400,28 +445,28 @@ namespace BackendCore.Migrations
                         {
                             Id = new Guid("c1690607-068b-47df-973d-7babb3efc1e8"),
                             BuildingId = new Guid("cf2504e0-4f89-41d3-9a0c-0305e82c3312"),
-                            Name = "Tiền máy giặt",
+                            Name = "Laundry Fee",
                             PricePerMonth = 100000m
                         },
                         new
                         {
                             Id = new Guid("9b9d671f-7196-49d2-9fe7-d439aa2dac3a"),
                             BuildingId = new Guid("cf2504e0-4f89-41d3-9a0c-0305e82c3312"),
-                            Name = "Tiền xe",
+                            Name = "Parking Fee",
                             PricePerMonth = 50000m
                         },
                         new
                         {
                             Id = new Guid("f5610f03-3992-428c-8c45-d31309c72799"),
                             BuildingId = new Guid("cf2504e0-4f89-41d3-9a0c-0305e82c3312"),
-                            Name = "Tiền rác",
+                            Name = "Trash Fee",
                             PricePerMonth = 20000m
                         },
                         new
                         {
                             Id = new Guid("8f696d6a-034b-41af-949a-969f78935a22"),
                             BuildingId = new Guid("9f2504e0-4f89-41d3-9a0c-0305e82c3309"),
-                            Name = "Tiền thang máy",
+                            Name = "Elevator Fee",
                             PricePerMonth = 20000m
                         });
                 });
@@ -447,8 +492,9 @@ namespace BackendCore.Migrations
                     b.Property<DateTime>("ExpectedCheckOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("HomeManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("HomeManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -464,11 +510,15 @@ namespace BackendCore.Migrations
                     b.Property<DateTime?>("RealCheckOutDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("RequestStatusId")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -476,6 +526,8 @@ namespace BackendCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HomeManagerId");
+
+                    b.HasIndex("RequestStatusId");
 
                     b.HasIndex("RoomId");
 
@@ -491,12 +543,12 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deposit = 3000000m,
                             ExpectedCheckOutDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             IsDeleted = false,
                             Note = "",
                             NumberOfTenants = 3,
                             RoomId = new Guid("4f2504e0-4f89-41d3-8a0c-0305e82c3303"),
-                            TenantId = new Guid("b4e6ea80-f066-44f4-aa55-30e0a0fe30af")
+                            TenantId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF"
                         },
                         new
                         {
@@ -505,12 +557,12 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deposit = 3000000m,
                             ExpectedCheckOutDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             IsDeleted = false,
                             Note = "",
                             NumberOfTenants = 2,
                             RoomId = new Guid("4f2504e0-4f89-41d3-7a0c-0305e82c3303"),
-                            TenantId = new Guid("a1e1f042-ab4a-431e-8a8e-710e2eceffc3")
+                            TenantId = "A1E1F042-AB4A-431E-8A8E-710E2ECEFFC3"
                         },
                         new
                         {
@@ -519,12 +571,12 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deposit = 3000000m,
                             ExpectedCheckOutDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             IsDeleted = false,
                             Note = "",
                             NumberOfTenants = 3,
                             RoomId = new Guid("cbf552c9-bbfb-4920-9f43-9782c33d88e8"),
-                            TenantId = new Guid("4f9038f6-dcfd-40d4-96ed-601686db6b11")
+                            TenantId = "4F9038F6-DCFD-40D4-96ED-601686DB6B11"
                         },
                         new
                         {
@@ -533,12 +585,12 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deposit = 3000000m,
                             ExpectedCheckOutDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3302"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302",
                             IsDeleted = false,
                             Note = "",
                             NumberOfTenants = 1,
                             RoomId = new Guid("db740cec-f865-455b-874e-aa8e3436115f"),
-                            TenantId = new Guid("86f1e1d1-5ab7-48d3-8b14-97b0ad42018e")
+                            TenantId = "86F1E1D1-5AB7-48D3-8B14-97B0AD42018E"
                         });
                 });
 
@@ -556,8 +608,9 @@ namespace BackendCore.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid>("HomeManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("HomeManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -579,7 +632,7 @@ namespace BackendCore.Migrations
                             Id = new Guid("68d0f123-4855-4004-bdf2-aeebae8f7bde"),
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Đến giờ đóng tiền nhà rồi, không đóng không cho ở. Có 10 phút kể từ thông báo này để đóng.",
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             Title = "Đóng tiền điện nước tháng 12/2023"
                         },
                         new
@@ -587,7 +640,7 @@ namespace BackendCore.Migrations
                             Id = new Guid("2a9306b5-7c9d-4cda-82c7-94c7641de97e"),
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Đến giờ đóng tiền nhà rồi, không đóng không cho ở. Có 10 phút kể từ thông báo này để đóng.",
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3302"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302",
                             Title = "Đóng tiền nhà tháng 1/2024"
                         },
                         new
@@ -595,7 +648,7 @@ namespace BackendCore.Migrations
                             Id = new Guid("0b447141-a4eb-4444-9d6a-d35ba9693995"),
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Đến giờ đóng tiền nhà rồi, không đóng không cho ở. Có 10 phút kể từ thông báo này để đóng.",
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3306"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
                             Title = "Đóng tiền điện nước tháng 12/2023"
                         });
                 });
@@ -617,10 +670,16 @@ namespace BackendCore.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("RequestStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RequestStatusId");
 
                     b.HasIndex("TenantId");
 
@@ -633,7 +692,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsReaded = true,
                             Message = "Đóng tiền nhà tháng 12/2023",
-                            TenantId = new Guid("b4e6ea80-f066-44f4-aa55-30e0a0fe30af")
+                            TenantId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF"
                         },
                         new
                         {
@@ -641,7 +700,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsReaded = false,
                             Message = "Đóng tiền nhà tháng 12/2023",
-                            TenantId = new Guid("f63c6963-7a41-4ab5-ad8e-4fef8a8a843f")
+                            TenantId = "F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F"
                         },
                         new
                         {
@@ -649,7 +708,7 @@ namespace BackendCore.Migrations
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsReaded = false,
                             Message = "Đóng tiền nhà tháng 12/2023",
-                            TenantId = new Guid("257862cb-bfd1-4d55-ab50-10d186e3e8f4")
+                            TenantId = "257862CB-BFD1-4D55-AB50-10D186E3E8F4"
                         });
                 });
 
@@ -670,8 +729,9 @@ namespace BackendCore.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid>("HomeManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("HomeManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -682,8 +742,9 @@ namespace BackendCore.Migrations
                     b.Property<int>("RequestTypeId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -706,33 +767,33 @@ namespace BackendCore.Migrations
                             Id = new Guid("f9d7aac9-6978-4b71-b6ab-f56ac147f8b3"),
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Không có nước",
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                             IsDeleted = false,
                             RequestStatusId = 1,
                             RequestTypeId = 2,
-                            TenantId = new Guid("b4e6ea80-f066-44f4-aa55-30e0a0fe30af")
+                            TenantId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF"
                         },
                         new
                         {
                             Id = new Guid("ba9f1f1a-46ad-4ebd-a5e3-f26daae31812"),
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Thêm bình nóng lạnh",
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3306"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
                             IsDeleted = false,
                             RequestStatusId = 2,
                             RequestTypeId = 4,
-                            TenantId = new Guid("f63c6963-7a41-4ab5-ad8e-4fef8a8a843f")
+                            TenantId = "F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F"
                         },
                         new
                         {
                             Id = new Guid("9d387606-2a10-4119-b5a5-16176626de19"),
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Có điều khiển điều hòa không?",
-                            HomeManagerId = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3306"),
+                            HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
                             IsDeleted = false,
                             RequestStatusId = 3,
                             RequestTypeId = 1,
-                            TenantId = new Guid("257862cb-bfd1-4d55-ab50-10d186e3e8f4")
+                            TenantId = "257862CB-BFD1-4D55-AB50-10D186E3E8F4"
                         });
                 });
 
@@ -757,22 +818,22 @@ namespace BackendCore.Migrations
                         new
                         {
                             Id = 1,
-                            Status = "Chưa nhận"
+                            Status = "Sent"
                         },
                         new
                         {
                             Id = 2,
-                            Status = "Đã nhận"
+                            Status = "Pending"
                         },
                         new
                         {
                             Id = 3,
-                            Status = "Chấp nhận"
+                            Status = "Accepted"
                         },
                         new
                         {
                             Id = 4,
-                            Status = "Từ chối"
+                            Status = "Rejected"
                         });
                 });
 
@@ -797,61 +858,27 @@ namespace BackendCore.Migrations
                         new
                         {
                             Id = 1,
-                            Type = "Câu hỏi"
+                            Type = "Question"
                         },
                         new
                         {
                             Id = 2,
-                            Type = "Phàn nàn"
+                            Type = "Complain"
                         },
                         new
                         {
                             Id = 3,
-                            Type = "Yêu cầu"
+                            Type = "Request"
                         },
                         new
                         {
                             Id = 4,
-                            Type = "Đề xuất"
+                            Type = "Suggestion"
                         },
                         new
                         {
                             Id = 5,
-                            Type = "Khác"
-                        });
-                });
-
-            modelBuilder.Entity("Entities.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Home Manager"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Tenant"
+                            Type = "Others"
                         });
                 });
 
@@ -1135,6 +1162,234 @@ namespace BackendCore.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+                            ConcurrencyStamp = "f37016d3-5406-46bf-a45c-411b0580d72b",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
+                        },
+                        new
+                        {
+                            Id = "2c5e174e-3b0e-446f-86af-583d56fd7210",
+                            ConcurrencyStamp = "25881f61-aad4-41c6-9407-d01d06d66e40",
+                            Name = "Tenant",
+                            NormalizedName = "TENANT"
+                        },
+                        new
+                        {
+                            Id = "2c5e174e-3b0e-446f-86af-683d56fd7210",
+                            ConcurrencyStamp = "ddf50698-f1c7-466f-a504-407286fb514c",
+                            Name = "Home Manager",
+                            NormalizedName = "HOME MAANAGER"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "257862CB-BFD1-4D55-AB50-10D186E3E8F4",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "A1E1F042-AB4A-431E-8A8E-710E2ECEFFC3",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "4F9038F6-DCFD-40D4-96ED-601686DB6B11",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "D7FBD8C3-8D8A-4DBB-BE44-34B9D9C6D012",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "FF4D981F-E335-4928-9F2C-DB378E6AFC5B",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "86F1E1D1-5AB7-48D3-8B14-97B0AD42018E",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "3F2504E0-4F89-41D3-9A0C-0305E82C3307",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "3F2504E0-4F89-41D3-9A0C-0305E82C3309",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        },
+                        new
+                        {
+                            UserId = "3F2504E0-4F89-41D3-9A0C-0305E82C3310",
+                            RoleId = "2c5e174e-3b0e-446f-86af-583d56fd7210"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("Entities.Models.HomeManager", b =>
                 {
                     b.HasBaseType("Entities.Models.BuildingResident");
@@ -1144,81 +1399,117 @@ namespace BackendCore.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+                            Id = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fd7811be-7672-48b3-8656-ce4c51bcf07e",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "anh_tuan@example.com",
+                            EmailConfirmed = false,
                             FullName = "Anh Tuấn",
                             IsDeleted = false,
                             IsMale = true,
-                            Password = "password789",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEDVLtMOoN4uc3IQad9ExkTk0ZqcXP+TFyC03PUTKaFH1WoEDubaWrOGOqCbmVCmxaQ==",
                             PhoneNumber = "0551234567",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 2
+                            SecurityStamp = "baceabba-a764-4389-9eb0-9cb72d6ef1b7",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3302"),
+                            Id = "3F2504E0-4F89-41D3-9A0C-0305E82C3302",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "4e0e7b29-109c-4e5d-bd9d-cc75a6cf65dd",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "bich_hang@example.com",
+                            EmailConfirmed = false,
                             FullName = "Bích Hằng",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "passwordabc",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEKQqNFhV+nrX3yY6gZqJu2AufmIZetyo5xQR7PXxuOG+MYYYBleHyf6FOmLzC74KrA==",
                             PhoneNumber = "0659876543",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 2
+                            SecurityStamp = "cdd91ae5-41e9-4513-a2bb-40ed6ecd02b3",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3306"),
+                            Id = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "edec3322-6293-47a2-b2a8-f06edee31120",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "lam_truong@example.com",
+                            EmailConfirmed = false,
                             FullName = "Lâm Trường",
                             IsDeleted = true,
                             IsMale = true,
-                            Password = "password456",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEKOtXZ8Mb63aZJPRlh7T9dwRmHvZTg85jyBxmvVTcZS0+P7+9tOR5zjMEtnHBFy9Yw==",
                             PhoneNumber = "0852227890",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 2
+                            SecurityStamp = "b152e5a5-ace4-40d4-a935-bc3c55dbd7f9",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3307"),
+                            Id = "3F2504E0-4F89-41D3-9A0C-0305E82C3307",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5544df34-0a8b-4209-89e6-de681a37f762",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "linh_chau@example.com",
+                            EmailConfirmed = false,
                             FullName = "Linh Châu",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "password789",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEIdyJtBy5BWXR1CYKAXzXiiMm9taS0qrPL+FNXgqLlbdQievlme52aDb1EZ/lUvQew==",
                             PhoneNumber = "0955556789",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 2
+                            SecurityStamp = "9fda5038-c58d-4230-afed-56913ab5597c",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3309"),
+                            Id = "3F2504E0-4F89-41D3-9A0C-0305E82C3309",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1125cb2c-7b33-43f4-bc1a-574847f51e26",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "quynh_nhu@example.com",
+                            EmailConfirmed = false,
                             FullName = "Quỳnh Như",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "password456",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEKq1oCKK5EPoX4RmTbH3W/LulICDajW1fpQaAvqBH5Vh4jFZWfjPNPt5zti5+f0HVg==",
                             PhoneNumber = "0955555678",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 2
+                            SecurityStamp = "af0f989e-c865-402e-b8b2-7b142f88594c",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
-                            Id = new Guid("3f2504e0-4f89-41d3-9a0c-0305e82c3310"),
+                            Id = "3F2504E0-4F89-41D3-9A0C-0305E82C3310",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0d7a517d-1342-4e59-92b3-321c03ce050b",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "hoang_son@example.com",
+                            EmailConfirmed = false,
                             FullName = "Hoàng Sơn",
                             IsDeleted = false,
                             IsMale = true,
-                            Password = "password789",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEJVSwSIdLKkhY2pMwec7ycR6vdpDYfMSsN2GyPtaaICGX24jKehiXbBB3PYrB0YbEA==",
                             PhoneNumber = "0955559012",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 2
+                            SecurityStamp = "fd161e6e-0aa8-44b2-80f5-55cccc20b98e",
+                            TwoFactorEnabled = false
                         });
                 });
 
@@ -1227,7 +1518,6 @@ namespace BackendCore.Migrations
                     b.HasBaseType("Entities.Models.BuildingResident");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -1244,128 +1534,192 @@ namespace BackendCore.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b4e6ea80-f066-44f4-aa55-30e0a0fe30af"),
+                            Id = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ec6a3f13-ba30-49e9-ac29-4b60ffa8114d",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "email1@example.com",
+                            EmailConfirmed = false,
                             FullName = "Nguyễn Thị Linh",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "LINH123",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIIntrcg/RDHm/BWH4LPIeellml+hW9XWI7JxW1HkIm7xFqyKzn7AUwcd99/Ltakyw==",
                             PhoneNumber = "0987654321",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "a63968f3-6029-4dbe-b03b-fd9f93fc5805",
+                            TwoFactorEnabled = false,
+                            UserName = "linh123",
                             Address = "",
                             Dob = new DateTime(1990, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("4f2504e0-4f89-41d3-8a0c-0305e82c3303")
                         },
                         new
                         {
-                            Id = new Guid("f63c6963-7a41-4ab5-ad8e-4fef8a8a843f"),
+                            Id = "F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "20486d0b-4577-483a-a345-82b3baae75fb",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "hyen4132@example.com",
+                            EmailConfirmed = false,
                             FullName = "Hoàng Thị Yến",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "HYEN4132",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFnkTwAuaFH/2z2egf/x9ma/iRAddRJgAFtLYfEXIYUtgSmMT3f9Rqs33ltJINCnZw==",
                             PhoneNumber = "0976543210",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "927064f0-6a92-4501-9d0d-34a8c14c6315",
+                            TwoFactorEnabled = false,
+                            UserName = "hyen4132",
                             Address = "",
                             Dob = new DateTime(1991, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("4f2504e0-4f89-41d3-8a0c-0305e82c3303")
                         },
                         new
                         {
-                            Id = new Guid("257862cb-bfd1-4d55-ab50-10d186e3e8f4"),
+                            Id = "257862CB-BFD1-4D55-AB50-10D186E3E8F4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "92e4b7b3-1fe9-4887-b3a7-b62223ee3cd4",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "yen123@example.com",
+                            EmailConfirmed = false,
                             FullName = "Vũ Hoàng Yến",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "YEN123",
+                            PasswordHash = "AQAAAAEAACcQAAAAED+7DMoqZ3Tu+aFhyat6eZUmS+NAsMutjh+64Zbf7bS/R+iNvCSCAScLO2jC9H3yXQ==",
                             PhoneNumber = "0965432109",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "42993da7-52ba-4ae8-a0e6-3bc1a5e13a2f",
+                            TwoFactorEnabled = false,
+                            UserName = "yen123",
                             Address = "",
                             Dob = new DateTime(1992, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("4f2504e0-4f89-41d3-8a0c-0305e82c3303")
                         },
                         new
                         {
-                            Id = new Guid("a1e1f042-ab4a-431e-8a8e-710e2eceffc3"),
+                            Id = "A1E1F042-AB4A-431E-8A8E-710E2ECEFFC3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0e8ac560-4153-45c4-b470-1b40039055d1",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "tva@example.com",
+                            EmailConfirmed = false,
                             FullName = "Trần Văn A",
                             IsDeleted = false,
                             IsMale = true,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "TVA",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMHp5C/CSws/+4pI1WfXbkE1McYTensYF+ZqfOfO7fBatc2dln1Cr+3DxaVe1rO1Mw==",
                             PhoneNumber = "0954321098",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "3a2aae43-f906-4cc8-ba99-f75d35c7fd56",
+                            TwoFactorEnabled = false,
+                            UserName = "tva",
                             Address = "",
                             Dob = new DateTime(1985, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("4f2504e0-4f89-41d3-7a0c-0305e82c3303")
                         },
                         new
                         {
-                            Id = new Guid("4f9038f6-dcfd-40d4-96ed-601686db6b11"),
+                            Id = "4F9038F6-DCFD-40D4-96ED-601686DB6B11",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e0fdb94e-6127-4d6e-90b5-046525cdad96",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ptb@example.com",
+                            EmailConfirmed = false,
                             FullName = "Phạm Thị B",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "PTB",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEpiIYCtrEdZMIwu+H/gxN5qgHLMn+9ZcqioZWfCkxKn6rTRmmzdjWULf4y7I2CxcA==",
                             PhoneNumber = "0943210987",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "5cf9cbb7-4406-4560-873e-8fece1fdaf67",
+                            TwoFactorEnabled = false,
+                            UserName = "ptb",
                             Address = "",
                             Dob = new DateTime(1986, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("cbf552c9-bbfb-4920-9f43-9782c33d88e8")
                         },
                         new
                         {
-                            Id = new Guid("d7fbd8c3-8d8a-4dbb-be44-34b9d9c6d012"),
+                            Id = "D7FBD8C3-8D8A-4DBB-BE44-34B9D9C6D012",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b6e5b640-7eab-4b3e-a6e2-b9f2b5781b4b",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "lvc@example.com",
+                            EmailConfirmed = false,
                             FullName = "Phạm Thị C",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "LVC",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKXD40Cs4Ccf/AoH6/govGx35wCV1eN98o0VM09pKW3eHvhac8o+qq/yjGGdkYOViw==",
                             PhoneNumber = "0932109876",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "f511c9e8-97ac-4037-97d8-6e4c27127e6b",
+                            TwoFactorEnabled = false,
+                            UserName = "lvc",
                             Address = "",
                             Dob = new DateTime(1987, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("cbf552c9-bbfb-4920-9f43-9782c33d88e8")
                         },
                         new
                         {
-                            Id = new Guid("ff4d981f-e335-4928-9f2c-db378e6afc5b"),
+                            Id = "FF4D981F-E335-4928-9F2C-DB378E6AFC5B",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c3cecdcf-ac9e-406a-bb4f-fb4826279dc9",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ntd@example.com",
+                            EmailConfirmed = false,
                             FullName = "Nguyễn Thị D",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "NTD",
+                            PasswordHash = "AQAAAAEAACcQAAAAED9DpQqJ9X7d2oUkWVRPvQG56F+kfZLnPJ9Om//GxKET9fD6x4DZxOfZ+RH6grgTsg==",
                             PhoneNumber = "0921098765",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "e60c99c2-be33-4260-848e-4edf74f809eb",
+                            TwoFactorEnabled = false,
+                            UserName = "ntd",
                             Address = "",
                             Dob = new DateTime(1988, 7, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("cbf552c9-bbfb-4920-9f43-9782c33d88e8")
                         },
                         new
                         {
-                            Id = new Guid("86f1e1d1-5ab7-48d3-8b14-97b0ad42018e"),
+                            Id = "86F1E1D1-5AB7-48D3-8B14-97B0AD42018E",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "dcc1789a-fdeb-4f80-b325-42dcb9c55ca0",
                             CreatedAt = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "tte@example.com",
+                            EmailConfirmed = false,
                             FullName = "Trần Thị E",
                             IsDeleted = false,
                             IsMale = false,
-                            Password = "mk123",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "TTE",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIwofQVg7J0ATs7LKSNtD5uxfUzkyFRyRhJj7yuomVgiPNpkd3zsLeyVkPp3e0bakQ==",
                             PhoneNumber = "0910987654",
+                            PhoneNumberConfirmed = false,
                             PortraitPictureUrl = "",
-                            RoleId = 3,
+                            SecurityStamp = "c7231b2f-bb23-4921-94f4-072a193e8b36",
+                            TwoFactorEnabled = false,
+                            UserName = "tte",
                             Address = "",
                             Dob = new DateTime(1989, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoomId = new Guid("db740cec-f865-455b-874e-aa8e3436115f")
@@ -1428,17 +1782,6 @@ namespace BackendCore.Migrations
                     b.Navigation("HomeManager");
                 });
 
-            modelBuilder.Entity("Entities.Models.BuildingResident", b =>
-                {
-                    b.HasOne("Entities.Models.Role", "Role")
-                        .WithMany("BuildingResidents")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("Entities.Models.BuildingService", b =>
                 {
                     b.HasOne("Entities.Models.Building", "Building")
@@ -1457,6 +1800,11 @@ namespace BackendCore.Migrations
                         .HasForeignKey("HomeManagerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Entities.Models.RequestStatus", null)
+                        .WithMany("Contracts")
+                        .HasForeignKey("RequestStatusId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Entities.Models.Room", "Room")
                         .WithMany("Contracts")
@@ -1490,6 +1838,11 @@ namespace BackendCore.Migrations
 
             modelBuilder.Entity("Entities.Models.Notification", b =>
                 {
+                    b.HasOne("Entities.Models.RequestStatus", null)
+                        .WithMany("Notifications")
+                        .HasForeignKey("RequestStatusId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Entities.Models.Tenant", "Tenant")
                         .WithMany("Notifications")
                         .HasForeignKey("TenantId")
@@ -1545,6 +1898,57 @@ namespace BackendCore.Migrations
                     b.Navigation("Building");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Entities.Models.BuildingResident", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Entities.Models.BuildingResident", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Models.BuildingResident", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Entities.Models.BuildingResident", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Entities.Models.Tenant", b =>
                 {
                     b.HasOne("Entities.Models.Room", "Room")
@@ -1575,17 +1979,16 @@ namespace BackendCore.Migrations
 
             modelBuilder.Entity("Entities.Models.RequestStatus", b =>
                 {
+                    b.Navigation("Contracts");
+
+                    b.Navigation("Notifications");
+
                     b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("Entities.Models.RequestType", b =>
                 {
                     b.Navigation("Requests");
-                });
-
-            modelBuilder.Entity("Entities.Models.Role", b =>
-                {
-                    b.Navigation("BuildingResidents");
                 });
 
             modelBuilder.Entity("Entities.Models.Room", b =>

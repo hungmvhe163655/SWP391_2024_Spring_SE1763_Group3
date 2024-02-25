@@ -16,7 +16,7 @@ namespace Repositories.Configurations
                     UpdatedAt = null,
                     Title = "Đóng tiền điện nước tháng 12/2023",
                     Description = "Đến giờ đóng tiền nhà rồi, không đóng không cho ở. Có 10 phút kể từ thông báo này để đóng.",
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301"
                 },
                 new News
                 {
@@ -25,7 +25,7 @@ namespace Repositories.Configurations
                     UpdatedAt = null,
                     Title = "Đóng tiền nhà tháng 1/2024",
                     Description = "Đến giờ đóng tiền nhà rồi, không đóng không cho ở. Có 10 phút kể từ thông báo này để đóng.",
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3302")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302"
                 },
                 new News
                 {
@@ -34,7 +34,7 @@ namespace Repositories.Configurations
                     UpdatedAt = null,
                     Title = "Đóng tiền điện nước tháng 12/2023",
                     Description = "Đến giờ đóng tiền nhà rồi, không đóng không cho ở. Có 10 phút kể từ thông báo này để đóng.",
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3306")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306"
                 });
         }
     }

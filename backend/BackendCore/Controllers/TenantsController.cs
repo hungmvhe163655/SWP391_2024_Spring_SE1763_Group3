@@ -6,6 +6,7 @@ using BackendCore.Utils.RequestFeatures.EntityParameters;
 using BackendCore.Utils.RequestFeatures.Paging;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace BackendCore.Controllers
 {
     [Route("api/tenants")]
     [ApiController]
+    [Authorize]
     public class TenantsController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
@@ -122,44 +124,44 @@ namespace BackendCore.Controllers
             return Ok("Delete successful!");
         }
 
-        [HttpGet("{id:guid}/notifications")]
-        public async Task<IActionResult> GetTenantNotifications(Guid id)
-        {
-            var tenant = await _context.Tenants
-                .Include(t => t.Notifications)
-                .FirstOrDefaultAsync(t => t.Id == id)
-                ?? throw new TenantNotFoundException(id);
+        //[HttpGet("{id:guid}/notifications")]
+        //public async Task<IActionResult> GetTenantNotifications(Guid id)
+        //{
+        //    var tenant = await _context.Tenants
+        //        .Include(t => t.Notifications)
+        //        .FirstOrDefaultAsync(t => t.Id == id)
+        //        ?? throw new TenantNotFoundException(id);
 
-            var notificationsDTO = _mapper
-                .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
+        //    var notificationsDTO = _mapper
+        //        .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
 
-            return Ok(notificationsDTO);
-        }
+        //    return Ok(notificationsDTO);
+        //}
 
-        [HttpGet("{id:guid}/requests")]
-        public async Task<IActionResult> GetTenantRequests(Guid id)
-        {
-            var tenant = await _context.Tenants
-                .SingleOrDefaultAsync(t => t.Id == id)
-                ?? throw new TenantNotFoundException(id);
+        //[HttpGet("{id:guid}/requests")]
+        //public async Task<IActionResult> GetTenantRequests(Guid id)
+        //{
+        //    var tenant = await _context.Tenants
+        //        .SingleOrDefaultAsync(t => t.Id == id)
+        //        ?? throw new TenantNotFoundException(id);
 
-            await _context.Entry(tenant)
-                .Collection(t => t.Requests)
-                .Query()
-                .Include(r => r.RequestStatus)
-                .Include(r => r.RequestType)
-                .LoadAsync();
+        //    await _context.Entry(tenant)
+        //        .Collection(t => t.Requests)
+        //        .Query()
+        //        .Include(r => r.RequestStatus)
+        //        .Include(r => r.RequestType)
+        //        .LoadAsync();
 
-            // Multiple round trip which will cause performance issues,
-            // will adjust later
-            foreach (var request in tenant.Requests)
-                await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
+        //    // Multiple round trip which will cause performance issues,
+        //    // will adjust later
+        //    foreach (var request in tenant.Requests)
+        //        await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
 
-            var requestsDTO = _mapper
-                .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
+        //    var requestsDTO = _mapper
+        //        .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
 
-            return Ok(requestsDTO);
-        }
+        //    return Ok(requestsDTO);
+        //}
 
         private async Task<Tenant> FindTenant(Guid id)
             => await _context.Tenants.FindAsync(id)

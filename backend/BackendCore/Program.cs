@@ -6,6 +6,7 @@ using HomeManagementBackend.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
@@ -64,6 +65,9 @@ namespace BackendCore
                 builder.Services.AddSwaggerGen();
                 builder.Services.AddAutoMapper(typeof(AssemblyReference));
                 builder.Services.AddDbContext<HomeManagementDbContext>();
+                builder.Services.AddAuthentication();
+                builder.Services.ConfigureIdentity();
+                builder.Services.ConfigureJWT(builder.Configuration);
 
                 var app = builder.Build();
 
@@ -89,6 +93,8 @@ namespace BackendCore
                 app.MapControllers();
 
                 app.UseCors("CorsPolicy");
+
+                app.UseAuthentication();
 
                 app.UseAuthorization();
 

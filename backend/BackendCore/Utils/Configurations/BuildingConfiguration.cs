@@ -21,7 +21,7 @@ namespace Repositories.Configurations
                     IsDeleted = false,
                     WaterPricePerMonth = 21000.0m,
                     ElectricityPricePerMonth = 2675.0m,
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301"
                 },
                 new Building
                 {
@@ -34,7 +34,7 @@ namespace Repositories.Configurations
                     IsDeleted = false,
                     WaterPricePerMonth = 22000.0m,
                     ElectricityPricePerMonth = 2500.0m,
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301"
                 },
                 new Building
                 {
@@ -47,7 +47,7 @@ namespace Repositories.Configurations
                     IsDeleted = false,
                     WaterPricePerMonth = 15000.0m,
                     ElectricityPricePerMonth = 2700.0m,
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3302")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302"
                 },
                 new Building
                 {
@@ -60,7 +60,7 @@ namespace Repositories.Configurations
                     IsDeleted = false,
                     WaterPricePerMonth = 27000.0m,
                     ElectricityPricePerMonth = 3500.0m,
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3307")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3307"
                 },
                 new Building
                 {
@@ -73,7 +73,20 @@ namespace Repositories.Configurations
                     IsDeleted = false,
                     WaterPricePerMonth = 20000.0m,
                     ElectricityPricePerMonth = 3400.0m,
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3310")
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3310"
+                },
+                new Building
+                {
+                    Id = Guid.Parse("FF2504E0-4F89-41D3-9A0C-0305E82C3312"),
+                    Name = "ABC Apartment",
+                    Address = "2223 Stupid Street",
+                    Description = "Mô tả cho tòa nhà.",
+                    CreatedAt = DateTime.Parse("2024-05-02"),
+                    UpdatedAt = null,
+                    IsDeleted = false,
+                    WaterPricePerMonth = 20000.0m,
+                    ElectricityPricePerMonth = 3400.0m,
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3310"
                 });
         }
     }

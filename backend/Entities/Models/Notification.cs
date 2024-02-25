@@ -25,7 +25,7 @@ namespace Entities.Models
         public string Message { get; set; } = null!;
 
         // One Tenant
-        public Guid TenantId { get; set; }
+        public string TenantId { get; set; } = null!;
         public virtual Tenant Tenant { get; set; } = null!;
     }
 }
