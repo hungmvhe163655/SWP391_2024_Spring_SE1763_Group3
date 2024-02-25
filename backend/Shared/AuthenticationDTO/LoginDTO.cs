@@ -10,8 +10,8 @@ namespace Shared.AuthenticationDTO
     public record LoginDTO
     {
 
-        [Required(ErrorMessage = "User name is required")]
-        public string UserName { get; init; }
+        [Required(ErrorMessage = "Email is required")]
+        public string Email { get; init; }
         [Required(ErrorMessage = "Password name is required")]
         public string Password { get; init; }
 

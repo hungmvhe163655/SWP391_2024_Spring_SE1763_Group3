@@ -27,7 +27,7 @@ namespace BackendCore.Controllers
             _service = service;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Register([FromBody] TenantRegistrationDTO tenantRegistration)
         {
@@ -48,7 +48,7 @@ namespace BackendCore.Controllers
 
             return StatusCode(201, new
             {
-                Token = await _service.CreateToken()
+                Token = await _service.CreateToken(true)
             });
         }
 
@@ -56,13 +56,14 @@ namespace BackendCore.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Authenticate([FromBody] LoginDTO user)
         {
+            var (isValid, message) = await _service.ValidateUser(user);
 
-            if (!await _service.ValidateUser(user))
-                return Unauthorized();
+            if (!isValid)
+                return Unauthorized(message);
 
             return Ok(new
             {
-                Token = await _service.CreateToken()
+                Token = await _service.CreateToken(true)
             });
         }
     }

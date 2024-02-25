@@ -27,5 +27,7 @@ namespace Entities.Models
         // Picture will be save on GG drive instead
         [MaxLength(1000)]
         public string? PortraitPictureUrl { get; set; } = null!;
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }
