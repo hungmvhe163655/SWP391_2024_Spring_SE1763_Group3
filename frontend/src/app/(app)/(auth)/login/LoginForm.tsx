@@ -18,8 +18,8 @@ import { PasswordInput } from "@/components/ui/input-password";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { signIn } from "@/lib/utils/auth";
 import { LoginCredential } from "@/types/app";
+import { authenticate } from "@/lib/actions/authenticate";
 
 const formSchema = z.object({
   email: z
@@ -51,12 +51,14 @@ export function LoginForm() {
         password: values.password,
       };
 
-      var data = await signIn(loginCredential);
+      var data = await authenticate(loginCredential);
+
       toast({
         variant: "success",
-        description: "Hello " + data.fullName,
+        description: "Hello " + data.token.accessToken,
       });
-      router.push(`/tenants/${data.tenantid}`);
+
+      //router.push(`/tenants/${data.tenantid}`);
     } catch (error) {
       // Handle network errors and other exceptions
       toast({

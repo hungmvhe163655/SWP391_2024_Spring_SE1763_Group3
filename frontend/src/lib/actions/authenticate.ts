@@ -1,10 +1,22 @@
 "use sever";
 
-import { LoginCredential } from "@/types/app";
-import { signIn } from "../utils/auth";
+import { JwtCredential, LoginCredential } from "@/types/app";
+import { fetchData } from "../utils/api";
+import { AUTHORIZATION_API } from "../constants";
 
-export const authenticate = async ({ email, password }: LoginCredential) => {
+export const authenticate = async ({
+  email,
+  password,
+}: LoginCredential): Promise<JwtCredential> => {
   try {
-    var jwtCredential = await signIn({ email, password });
-  } catch (error) {}
+    const jwtCredential: JwtCredential = await fetchData({
+      api: AUTHORIZATION_API + "/login",
+      object: { email, password },
+      method: "POST",
+    });
+
+    return jwtCredential;
+  } catch (error) {
+    throw error;
+  }
 };

@@ -40,7 +40,7 @@ namespace BackendCore.Services.InternalServices
                 if (_user == null)
                 {
                     _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Email '{user.Email}' not found.");
-                    return (false, "User not found.");
+                    return (false, $"Email '{user.Email}' not found.");
                 }
 
                 var result = await _userManager.CheckPasswordAsync(_user, user.Password);

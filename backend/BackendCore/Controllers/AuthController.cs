@@ -59,7 +59,10 @@ namespace BackendCore.Controllers
             var (isValid, message) = await _service.ValidateUser(user);
 
             if (!isValid)
-                return Unauthorized(message);
+                return Unauthorized(new
+                {
+                    Message = message
+                });
 
             return Ok(new
             {
