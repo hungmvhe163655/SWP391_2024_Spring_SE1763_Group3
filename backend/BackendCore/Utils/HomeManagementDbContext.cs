@@ -1,5 +1,7 @@
-﻿using Entities.Models;
+﻿using BackendCore.Utils.Configurations;
+using Entities.Models;
 using LoggerService;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Extensions.Logging;
@@ -7,14 +9,19 @@ using Repositories.Configurations;
 
 namespace BackendCore.Utils
 {
-    public class HomeManagementDbContext : DbContext
+    public class HomeManagementDbContext : IdentityDbContext<BuildingResident>
     {
-        private readonly ILoggerFactory _loggerFactory = 
+        private readonly ILoggerFactory _loggerFactory =
             LoggerFactory.Create(builder => { builder.AddNLog(); });
 
         public HomeManagementDbContext()
         {
         }
+
+        public HomeManagementDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         public DbSet<Bill> Bills { get; set; }
         public DbSet<BillStatus> BillStatuses { get; set; }
         public DbSet<Building> Buildings { get; set; }
@@ -30,7 +37,6 @@ namespace BackendCore.Utils
         public DbSet<News> News { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<BillDetail> BillDetails { get; set; }
-        public DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -63,7 +69,6 @@ namespace BackendCore.Utils
             modelBuilder.ApplyConfiguration(new HomeManagerConfiguration());
             modelBuilder.ApplyConfiguration(new BuildingConfiguration());
             modelBuilder.ApplyConfiguration(new RoomConfiguration());
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new RequestTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RequestStatusConfiguration());
             modelBuilder.ApplyConfiguration(new RequestConfiguration());
@@ -74,6 +79,8 @@ namespace BackendCore.Utils
             modelBuilder.ApplyConfiguration(new BillStatusConfiguration());
             modelBuilder.ApplyConfiguration(new BillDetailConfiguration());
             modelBuilder.ApplyConfiguration(new BillConfiguration());
+            modelBuilder.ApplyConfiguration(new IdentityRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new IdentityUserRoleConfiguration());
         }
     }
 }

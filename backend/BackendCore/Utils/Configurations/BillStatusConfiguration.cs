@@ -12,17 +12,17 @@ namespace Repositories.Configurations
                 new BillStatus()
                 {
                     Id = 1,
-                    Status = "Chưa trả",
+                    Status = "Not Paid",
                 },
                 new BillStatus()
                 {
                     Id = 2,
-                    Status = "Đã trả",
+                    Status = "Paid",
                 },
                 new BillStatus()
                 {
                     Id = 3,
-                    Status = "Quá hạn",
+                    Status = "Overdue",
                 });
         }
     }

@@ -12,27 +12,27 @@ namespace Repositories.Configurations
                 new RequestType()
                 {
                     Id = 1,
-                    Type = "Câu hỏi"
+                    Type = "Question"
                 },
                 new RequestType()
                 {
                     Id = 2,
-                    Type = "Phàn nàn"
+                    Type = "Complain"
                 },
                 new RequestType()
                 {
                     Id = 3,
-                    Type = "Yêu cầu"
+                    Type = "Request"
                 },
                 new RequestType()
                 {
                     Id = 4,
-                    Type = "Đề xuất"
+                    Type = "Suggestion"
                 },
                 new RequestType()
                 {
                     Id = 5,
-                    Type = "Khác"
+                    Type = "Others"
                 });
         }
     }

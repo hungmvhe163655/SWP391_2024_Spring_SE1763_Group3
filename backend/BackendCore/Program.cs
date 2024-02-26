@@ -6,6 +6,7 @@ using HomeManagementBackend.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
@@ -41,6 +42,8 @@ namespace BackendCore
                 builder.Services.ConfigureLoggerService();
                 builder.Services.ConfigureCors();
                 builder.Services.ConfigureResponseCaching();
+                builder.Services.ConfigureLoginService();
+                builder.Services.ConfigureSwagger();
 
                 builder.Services.Configure<ApiBehaviorOptions>(options =>
                 {
@@ -60,10 +63,13 @@ namespace BackendCore
                 builder.Services.AddMemoryCache();
                 builder.Services.ConfigureRateLimitingOptions();
                 builder.Services.AddHttpContextAccessor();
-                builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen();
+                builder.Services.AddEndpointsApiExplorer();            
                 builder.Services.AddAutoMapper(typeof(AssemblyReference));
                 builder.Services.AddDbContext<HomeManagementDbContext>();
+                builder.Services.AddAuthentication();
+                builder.Services.ConfigureIdentity();
+                builder.Services.ConfigureJWT(builder.Configuration);
+                builder.Services.AddJwtConfiguration(builder.Configuration);
 
                 var app = builder.Build();
 
@@ -90,12 +96,21 @@ namespace BackendCore
 
                 app.UseCors("CorsPolicy");
 
+                app.UseAuthentication();
+
                 app.UseAuthorization();
 
                 app.UseResponseCaching();
 
                 app.ConfigureExceptionHandler(
                     app.Services.GetRequiredService<ILoggerManager>());
+
+                app.UseSwagger();
+                app.UseSwaggerUI(s =>
+                {
+                    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Home Management API v1");
+                });
+
 
                 app.Run();
             }
