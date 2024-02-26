@@ -18,8 +18,8 @@ import { PasswordInput } from "@/components/ui/input-password";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-
-const api = process.env.NEXT_PUBLIC_AUTH_API_URL;
+import { signIn } from "@/lib/utils/auth";
+import { LoginCredential } from "@/types/app";
 
 const formSchema = z.object({
   email: z
@@ -44,52 +44,14 @@ export function LoginForm() {
   });
 
   // 2. Define a submit handler.
-  function ErrorPopup(message: string) {
-    toast({
-      variant: "destructive",
-      title: "Uh oh! Something went wrong.",
-      description: message,
-      action: <ToastAction altText="Try again">Try again</ToastAction>,
-    });
-  }
-
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!api) {
-      ErrorPopup("Something went wrong!");
-      return;
-    }
-
     try {
-      const response = await fetch(api, {
-        headers: {
-          Accept: "application/json, text/plain",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-        method: "POST",
-        body: JSON.stringify(values),
-      });
+      const loginCredential: LoginCredential = {
+        email: values.email,
+        password: values.password,
+      };
 
-      // Check if the response is successful
-      if (!response.ok) {
-        // Handle different error statuses
-        if (response.status === 400) {
-          throw new Error("Bad Request: Please check your input data.");
-        }
-
-        if (response.status === 401) {
-          const errorMessage = await response.text(); // Extract error message from response
-          throw new Error(`Unauthorized: ${errorMessage}`);
-        }
-
-        throw new Error(
-          "Server Error: Something went wrong on the server side."
-        );
-      }
-
-      // Parse the response JSON
-      const data = await response.json();
-
+      var data = await signIn(loginCredential);
       toast({
         variant: "success",
         description: "Hello " + data.fullName,
@@ -97,7 +59,10 @@ export function LoginForm() {
       router.push(`/tenants/${data.tenantid}`);
     } catch (error) {
       // Handle network errors and other exceptions
-      ErrorPopup((error as Error).message || "Something went wrong!");
+      toast({
+        variant: "destructive",
+        description: (error as Error).message || "Something went wrong!",
+      });
     }
   }
   return (

@@ -1,20 +1,10 @@
 "use sever";
 
-export const authenticate = async (
-  _currentState: unknown,
-  formData: FormData
-) => {
+import { LoginCredential } from "@/types/app";
+import { signIn } from "../utils/auth";
+
+export const authenticate = async ({ email, password }: LoginCredential) => {
   try {
-    await signIn("credentials", formData);
-  } catch (error) {
-    if (error) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return "Invalid credentials.";
-        default:
-          return "Something went wrong.";
-      }
-    }
-    throw error;
-  }
+    var jwtCredential = await signIn({ email, password });
+  } catch (error) {}
 };
