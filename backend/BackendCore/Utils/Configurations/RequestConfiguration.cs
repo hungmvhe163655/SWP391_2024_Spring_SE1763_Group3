@@ -18,8 +18,8 @@ namespace Repositories.Configurations
                     CreatedAt = DateTime.Parse("2024-05-02"),
                     UpdatedAt = null,
                     IsDeleted = false,
-                    TenantId = Guid.Parse("B4E6EA80-F066-44F4-AA55-30E0A0FE30AF"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301"),
+                    TenantId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301",
                     RequestTypeId = 2,
                     RequestStatusId = 1
                 },
@@ -30,8 +30,8 @@ namespace Repositories.Configurations
                     CreatedAt = DateTime.Parse("2024-05-02"),
                     UpdatedAt = null,
                     IsDeleted = false,
-                    TenantId = Guid.Parse("F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3306"),
+                    TenantId = "F63C6963-7A41-4AB5-AD8E-4FEF8A8A843F",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
                     RequestTypeId = 4,
                     RequestStatusId = 2
                 },
@@ -42,8 +42,8 @@ namespace Repositories.Configurations
                     CreatedAt = DateTime.Parse("2024-05-02"),
                     UpdatedAt = null,
                     IsDeleted = false,
-                    TenantId = Guid.Parse("257862CB-BFD1-4D55-AB50-10D186E3E8F4"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3306"),
+                    TenantId = "257862CB-BFD1-4D55-AB50-10D186E3E8F4",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3306",
                     RequestTypeId = 1,
                     RequestStatusId = 3
                 });

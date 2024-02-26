@@ -30,11 +30,11 @@ namespace Entities.Models
         public DateTime? DeletedAt { get; set; }
 
         // One Tenant
-        public Guid TenantId { get; set; }
+        public string TenantId { get; set; } = null!;
         public virtual Tenant Tenant { get; set; } = null!;
 
         // One Home Manager
-        public Guid HomeManagerId { get; set; }
+        public string HomeManagerId { get; set; } = null!;
         public virtual HomeManager HomeManager { get; set; } = null!;
 
         // One Request

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared.TenantDTO;
 
 namespace Shared.RequestStatusDTO
 {
@@ -7,8 +8,9 @@ namespace Shared.RequestStatusDTO
     {
         public RequestStautsProfile()
         {
-            CreateMap<UpdateRequestStatusDTO, RequestStatus>();
-            CreateMap<CreateRequestStatusDTO, RequestStatus>();
+            CreateMap<RequestStatus, ReadRequestStatusDTO>().ReverseMap();
+            CreateMap<UpdateRequestStatusDTO, RequestStatus>().ReverseMap(); ;
+            CreateMap<CreateRequestStatusDTO, RequestStatus>().ReverseMap(); ;
         }
 
     }
