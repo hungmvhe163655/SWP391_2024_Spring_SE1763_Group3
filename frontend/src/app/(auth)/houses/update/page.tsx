@@ -22,24 +22,39 @@ function House() {
                                 <Input type='text' id="name"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="name">House Management : </Label>
-                                <Input type='text' id="name"/>
+                                <Label htmlFor="houseManagement">House Management : </Label>
+                                <Input type='text' id="houseManagement"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="Number">Number Of Rooms : </Label>
-                                <Input type='number' id="Number"/>
+                                <Label htmlFor="numberOfRooms">Number Of Rooms : </Label>
+                                <Input type='number' id="numberOfRooms"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="Number">Price : </Label>
-                                <Input type='number' id="Number"/>
+                                <Label htmlFor="price">Price : </Label>
+                                <Input type='number' id="price"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="Text">Description : </Label>
+                                <Label htmlFor="description">Description : </Label>
                                 <Textarea placeholder="Type your message here." />
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="Status">Status : </Label>
-                                <Input type='text' id="status"/>
+                                {/* <select id="status">
+                                    <option value="dangThue">renting</option>
+                                    <option value="trong">empty</option>
+                                    <option value="khac">others</option>
+                                </select> */}
+                                <Select>
+                                    <SelectTrigger id="framework">
+                                        <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper">
+                                        <SelectItem value="renting">renting</SelectItem>
+                                        <SelectItem value="empty">empty</SelectItem>
+                                        <SelectItem value="fixing">fixing</SelectItem>
+                                        <SelectItem value="others">others</SelectItem>
+                                    </SelectContent>
+                                    </Select>
                             </div>
                         </div>
                     </form>

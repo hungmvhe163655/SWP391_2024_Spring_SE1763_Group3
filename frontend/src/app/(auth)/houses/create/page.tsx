@@ -17,24 +17,24 @@ function House() {
                 <CardContent>
                     <form>
                         <div className="grid w-full items-center gap-4">
-                            <div className="flex flex-col space-y-1.5">
+                        <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="name">Name : </Label>
                                 <Input type='text' id="name"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="name">House Management : </Label>
-                                <Input type='text' id="name"/>
+                                <Label htmlFor="houseManagement">House Management : </Label>
+                                <Input type='text' id="houseManagement"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="Number">Number Of Rooms : </Label>
-                                <Input type='number' id="Number"/>
+                                <Label htmlFor="numberOfRooms">Number Of Rooms : </Label>
+                                <Input type='number' id="numberOfRooms"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="Number">Price : </Label>
-                                <Input type='number' id="Number"/>
+                                <Label htmlFor="price">Price : </Label>
+                                <Input type='number' id="price"/>
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="Text">Description : </Label>
+                                <Label htmlFor="description">Description : </Label>
                                 <Textarea placeholder="Type your message here." />
                             </div>
                         </div>
