@@ -11,7 +11,7 @@ export default function MainNavbar() {
   const menus = [
     { title: "Home", path: "#" },
     { title: "Login", path: "/login" },
-    { title: "About Us", path: "#" },
+    { title: "About Us", path: "/aboutus" },
     { title: "Contact Us", path: "#" },
   ];
 
