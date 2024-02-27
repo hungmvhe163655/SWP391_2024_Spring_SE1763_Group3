@@ -43,7 +43,7 @@ const features = [
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-between p-15 h-[calc(80dvh)]">
+    <main className="flex flex-col items-center justify-between p-15 min-h-screen mt-14">
       <section className="m-auto max-w-screen-xl pb-1 px-4 items-center lg:flex md:px-8">
         <div className="space-y-4 flex-1 sm:text-center lg:text-left">
           <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl">

@@ -2,11 +2,11 @@ import LoginCard from "./LoginCard";
 
 const Login = () => {
   return (
-    <div className="flex bg-slate-200 h-[calc(80dvh)]">
+    <main className="flex flex-col min-h-screen bg-slate-200">
       <div className="m-auto">
         <LoginCard />
       </div>
-    </div>
+    </main>
   );
 };
 
