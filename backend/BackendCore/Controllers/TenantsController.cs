@@ -133,16 +133,10 @@ namespace BackendCore.Controllers
                 .FirstOrDefaultAsync(t => t.Id == id)
                 ?? throw new TenantNotFoundException(id);
 
-            tenantParameters.OrderBy = "CreatedAt";
-
-            var pagedNotifications = new PagedList<Notification>(tenant.Notifications.ToList(), tenant.Notifications.Count, 
-                tenantParameters.PageNumber, tenantParameters.PageSize);
+            var pagedNotifications = ChangeToPagedList(tenant.Notifications, tenantParameters);
 
             var notificationsDTO = _mapper
                 .Map<IEnumerable<ReadNotificationDTO>>(pagedNotifications);
-
-            Response.Headers.Add("X-Pagination",
-                JsonSerializer.Serialize(pagedNotifications.MetaData));
 
             return Ok(notificationsDTO);
         }
@@ -166,16 +160,11 @@ namespace BackendCore.Controllers
             foreach (var request in tenant.Requests)
                 await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
 
-            tenantParameters.OrderBy = "CreatedAt";
-
-            var pagedRequests = new PagedList<Request>(tenant.Requests.ToList(), tenant.Requests.Count,
-                 tenantParameters.PageNumber, tenantParameters.PageSize);
+            var pagedRequests = ChangeToPagedList(tenant.Requests, tenantParameters);
 
             var requestsDTO = _mapper
                 .Map<IEnumerable<ReadRequestDTO>>(pagedRequests);
 
-            Response.Headers.Add("X-Pagination",
-                JsonSerializer.Serialize(pagedRequests.MetaData));
 
             return Ok(requestsDTO);
         }
@@ -218,6 +207,22 @@ namespace BackendCore.Controllers
             }
 
             return query;
+        }
+
+        private PagedList<T> ChangeToPagedList<T>(ICollection<T> list, 
+            RequestParameters requestParameters)
+        {
+
+            requestParameters.OrderBy ??= "CreatedDate";
+
+            var pagedList = new PagedList<T>(list.ToList(), list.Count,
+                 requestParameters.PageNumber, requestParameters.PageSize);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(pagedList.MetaData));
+
+            return pagedList;
+
         }
     }
 }
