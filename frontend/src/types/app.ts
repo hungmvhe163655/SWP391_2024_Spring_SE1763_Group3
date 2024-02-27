@@ -12,3 +12,15 @@ export interface FetchDataOptions<T> {
 export interface JwtCredential {
   token: { accessToken: string; refreshToken: string };
 }
+
+export interface RegisterTenant {
+  fullName: string;
+  userName: string;
+  password: string;
+  isMale: true;
+  email: string;
+  phoneNumber: string;
+  roles: string[];
+  dob: Date;
+  address: string;
+}
