@@ -13,7 +13,7 @@ export default function DashboardLayout({
       <header>
         <MainNavbar />
       </header>
-      <main>{children}</main>
+      {children}
       <MainFooter />
     </>
   );
