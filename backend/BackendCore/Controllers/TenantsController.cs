@@ -19,7 +19,6 @@ namespace BackendCore.Controllers
 {
     [Route("api/tenants")]
     [ApiController]
-    [Authorize]
     public class TenantsController : ControllerBase
     {
         private readonly HomeManagementDbContext _context;
@@ -50,8 +49,8 @@ namespace BackendCore.Controllers
             return Ok(tenantsDTO);
         }
 
-        [HttpGet("{id:guid}", Name = "TenantById")]
-        public async Task<IActionResult> GetTenant(Guid id)
+        [HttpGet("{id}", Name = "TenantById")]
+        public async Task<IActionResult> GetTenant(string id)
         {
             var tenant = await FindTenant(id);
 
@@ -75,9 +74,9 @@ namespace BackendCore.Controllers
             return CreatedAtRoute("TenantById", new { id = createdTenant.Id }, createdTenant);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateTenant(Guid id,
+        public async Task<IActionResult> UpdateTenant(string id,
             [FromBody] UpdateTenantDTO updateTenantDTO)
         {
             var tenant = await FindTenant(id);
@@ -88,8 +87,8 @@ namespace BackendCore.Controllers
             return Ok("Update successful!");
         }
 
-        [HttpPatch("{id:guid}")]
-        public async Task<IActionResult> PartiallyUpdateTenant(Guid id,
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PartiallyUpdateTenant(string id,
             [FromBody] JsonPatchDocument<UpdateTenantDTO> patchDoc)
         {
             if (patchDoc is null)
@@ -113,8 +112,8 @@ namespace BackendCore.Controllers
             return Ok("Partially update successful!");
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteTenant(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTenant(string id)
         {
             var deleteTenant = await FindTenant(id);
 
@@ -124,46 +123,42 @@ namespace BackendCore.Controllers
             return Ok("Delete successful!");
         }
 
-        //[HttpGet("{id:guid}/notifications")]
-        //public async Task<IActionResult> GetTenantNotifications(Guid id)
-        //{
-        //    var tenant = await _context.Tenants
-        //        .Include(t => t.Notifications)
-        //        .FirstOrDefaultAsync(t => t.Id == id)
-        //        ?? throw new TenantNotFoundException(id);
+        [HttpGet("{id}/notifications")]
+        public async Task<IActionResult> GetTenantNotifications(string id)
+        {
+            var tenant = await _context.Tenants
+                .Include(t => t.Notifications)
+                .FirstOrDefaultAsync(t => t.Id == id)
+                ?? throw new TenantNotFoundException(id);
 
-        //    var notificationsDTO = _mapper
-        //        .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
+            var notificationsDTO = _mapper
+                .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
 
-        //    return Ok(notificationsDTO);
-        //}
+            return Ok(notificationsDTO);
+        }
 
-        //[HttpGet("{id:guid}/requests")]
-        //public async Task<IActionResult> GetTenantRequests(Guid id)
-        //{
-        //    var tenant = await _context.Tenants
-        //        .SingleOrDefaultAsync(t => t.Id == id)
-        //        ?? throw new TenantNotFoundException(id);
+        [HttpGet("{id}/requests")]
+        public async Task<IActionResult> GetTenantRequests(string id)
+        {
+            var tenant = await _context.Tenants
+                .SingleOrDefaultAsync(t => t.Id == id)
+                ?? throw new TenantNotFoundException(id);
 
-        //    await _context.Entry(tenant)
-        //        .Collection(t => t.Requests)
-        //        .Query()
-        //        .Include(r => r.RequestStatus)
-        //        .Include(r => r.RequestType)
-        //        .LoadAsync();
+            await _context.Entry(tenant)
+                .Collection(t => t.Requests)
+                .Query()
+                .Include(r => r.RequestStatus)
+                .Include(r => r.RequestType)
+                .Include(r => r.HomeManager)
+                .LoadAsync();
 
-        //    // Multiple round trip which will cause performance issues,
-        //    // will adjust later
-        //    foreach (var request in tenant.Requests)
-        //        await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
+            var requestsDTO = _mapper
+                .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
 
-        //    var requestsDTO = _mapper
-        //        .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
+            return Ok(requestsDTO);
+        }
 
-        //    return Ok(requestsDTO);
-        //}
-
-        private async Task<Tenant> FindTenant(Guid id)
+        private async Task<Tenant> FindTenant(string id)
             => await _context.Tenants.FindAsync(id)
              ?? throw new TenantNotFoundException(id);
 
