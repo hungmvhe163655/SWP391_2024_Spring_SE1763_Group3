@@ -54,7 +54,7 @@ function House() {
                                         <SelectItem value="fixing">fixing</SelectItem>
                                         <SelectItem value="others">others</SelectItem>
                                     </SelectContent>
-                                    </Select>
+                                </Select>
                             </div>
                         </div>
                     </form>
