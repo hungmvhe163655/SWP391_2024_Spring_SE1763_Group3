@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Azure;
 using BackendCore.Utils;
 using BackendCore.Utils.ActionFilters;
 using BackendCore.Utils.RepositoryExtensions;
+using BackendCore.Utils.RequestFeatures;
 using BackendCore.Utils.RequestFeatures.EntityParameters;
 using BackendCore.Utils.RequestFeatures.Paging;
 using Entities.Exceptions;
@@ -35,7 +37,7 @@ namespace BackendCore.Controllers
             [FromQuery] TenantParameter tenantParameters)
         {
 
-            var queryTenant = BuildQuery(_context.Tenants.AsNoTracking(), 
+            var queryTenant = BuildQuery(_context.Tenants.AsNoTracking(),
                 tenantParameters);
 
             var pagedTenant = await PagedList<Tenant>.ToPagedListAsync(queryTenant,
@@ -124,21 +126,29 @@ namespace BackendCore.Controllers
         }
 
         [HttpGet("{id}/notifications")]
-        public async Task<IActionResult> GetTenantNotifications(string id)
+        public async Task<IActionResult> GetTenantNotifications(string id, [FromQuery] RequestParameters tenantParameters)
         {
             var tenant = await _context.Tenants
                 .Include(t => t.Notifications)
                 .FirstOrDefaultAsync(t => t.Id == id)
                 ?? throw new TenantNotFoundException(id);
 
+            tenantParameters.OrderBy = "CreatedAt";
+
+            var pagedNotifications = new PagedList<Notification>(tenant.Notifications.ToList(), tenant.Notifications.Count, 
+                tenantParameters.PageNumber, tenantParameters.PageSize);
+
             var notificationsDTO = _mapper
-                .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
+                .Map<IEnumerable<ReadNotificationDTO>>(pagedNotifications);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(pagedNotifications.MetaData));
 
             return Ok(notificationsDTO);
         }
 
         [HttpGet("{id}/requests")]
-        public async Task<IActionResult> GetTenantRequests(string id)
+        public async Task<IActionResult> GetTenantRequests(string id, [FromQuery] RequestParameters tenantParameters)
         {
             var tenant = await _context.Tenants
                 .SingleOrDefaultAsync(t => t.Id == id)
@@ -149,11 +159,23 @@ namespace BackendCore.Controllers
                 .Query()
                 .Include(r => r.RequestStatus)
                 .Include(r => r.RequestType)
-                .Include(r => r.HomeManager)
                 .LoadAsync();
 
+            // Multiple round trip which will cause performance issues,
+            // will adjust later
+            foreach (var request in tenant.Requests)
+                await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
+
+            tenantParameters.OrderBy = "CreatedAt";
+
+            var pagedRequests = new PagedList<Request>(tenant.Requests.ToList(), tenant.Requests.Count,
+                 tenantParameters.PageNumber, tenantParameters.PageSize);
+
             var requestsDTO = _mapper
-                .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
+                .Map<IEnumerable<ReadRequestDTO>>(pagedRequests);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(pagedRequests.MetaData));
 
             return Ok(requestsDTO);
         }
@@ -162,7 +184,7 @@ namespace BackendCore.Controllers
             => await _context.Tenants.FindAsync(id)
              ?? throw new TenantNotFoundException(id);
 
-        private IQueryable<Tenant> BuildQuery(IQueryable<Tenant> query, 
+        private IQueryable<Tenant> BuildQuery(IQueryable<Tenant> query,
             TenantParameter parameters)
         {
             // Filter Gender
@@ -179,7 +201,7 @@ namespace BackendCore.Controllers
                     throw new DateRangeBadRequestException();
                 }
 
-                query = query.FilterCreatedDate(parameters.StartCreatedDate, 
+                query = query.FilterCreatedDate(parameters.StartCreatedDate,
                     parameters.EndCreatedDate);
             }
 
