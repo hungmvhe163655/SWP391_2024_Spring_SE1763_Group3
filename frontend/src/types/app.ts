@@ -9,7 +9,9 @@ export interface FetchDataOptions<T> {
   method?: "GET" | "POST" | "PUT" | "DELETE";
 }
 
-export interface JwtCredential {
+export interface LoginInfo {
+  userId: string;
+  userRoles: string[];
   token: { accessToken: string; refreshToken: string };
 }
 

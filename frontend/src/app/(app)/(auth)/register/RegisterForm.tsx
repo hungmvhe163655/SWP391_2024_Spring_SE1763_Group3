@@ -114,7 +114,7 @@ export function RegisterForm() {
         description: data.message,
       });
 
-      //router.push(`/tenants/${data.tenantid}`);
+      router.push("/login");
     } catch (error) {
       // Handle network errors and other exceptions
       toast({

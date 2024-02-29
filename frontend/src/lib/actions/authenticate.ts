@@ -1,7 +1,7 @@
 "use sever";
 
 import {
-  JwtCredential,
+  LoginInfo,
   LoginCredential,
   RegisterAccount,
   ResponseMessage,
@@ -12,15 +12,15 @@ import { AUTHORIZATION_API } from "../constants";
 export const authenticate = async ({
   email,
   password,
-}: LoginCredential): Promise<JwtCredential> => {
+}: LoginCredential): Promise<LoginInfo> => {
   try {
-    const jwtCredential: JwtCredential = await fetchData({
+    const loginInfo: LoginInfo = await fetchData({
       api: AUTHORIZATION_API + "/login",
       object: { email, password },
       method: "POST",
     });
 
-    return jwtCredential;
+    return loginInfo;
   } catch (error) {
     throw error;
   }

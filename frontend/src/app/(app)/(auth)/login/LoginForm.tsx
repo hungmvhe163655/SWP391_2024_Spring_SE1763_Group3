@@ -50,14 +50,24 @@ export const LoginForm: React.FC = () => {
         password: values.password,
       };
 
-      var data = await authenticate(loginCredential);
+      var user = await authenticate(loginCredential);
 
       toast({
         variant: "success",
-        description: "Hello " + data.token.accessToken,
+        description: "Login successfully!",
       });
 
-      //router.push(`/tenants/${data.tenantid}`);
+      if (user.userRoles.includes("manager")) {
+        router.push(`/managers/${user.userId}`);
+      } else if (user.userRoles.includes("tenant")) {
+        router.push(`/tenants/${user.userId}`);
+      } else {
+        // If roles is empty or "Admin"
+        toast({
+          variant: "destructive",
+          description: "You can't use this type of login!",
+        });
+      }
     } catch (error) {
       // Handle network errors and other exceptions
       toast({

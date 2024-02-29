@@ -31,7 +31,7 @@ namespace BackendCore.Services.InternalServices
             _jwtConfiguration = _configuration.Value;
         }
 
-        public async Task<(bool, string)> ValidateUser(LoginDTO user)
+        public async Task<(bool, string, BuildingResident?)> ValidateUser(LoginDTO user)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace BackendCore.Services.InternalServices
                 if (_user == null)
                 {
                     _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Email '{user.Email}' not found.");
-                    return (false, $"Email '{user.Email}' not found.");
+                    return (false, $"Email '{user.Email}' not found.", null);
                 }
 
                 var result = await _userManager.CheckPasswordAsync(_user, user.Password);
@@ -48,10 +48,10 @@ namespace BackendCore.Services.InternalServices
                 if (!result)
                 {
                     _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed for user '{user.Email}'. Incorrect password.");
-                    return (false, "Incorrect password.");
+                    return (false, "Incorrect password.", null);
                 }
 
-                return (true, "Authentication successful.");
+                return (true, "Authentication successful.", _user);
 
             }
             catch (Exception ex)
