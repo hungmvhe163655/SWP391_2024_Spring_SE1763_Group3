@@ -8,6 +8,7 @@ import {
 } from "@/types/app";
 import { fetchData } from "../utils/api";
 import { AUTHORIZATION_API } from "../constants";
+import { redirect } from "next/navigation";
 
 export const authenticate = async ({
   email,
@@ -19,6 +20,8 @@ export const authenticate = async ({
       object: { email, password },
       method: "POST",
     });
+
+    localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
 
     return loginInfo;
   } catch (error) {
@@ -40,4 +43,9 @@ export const register = async (
   } catch (error) {
     throw error;
   }
+};
+
+export const logout = () => {
+  localStorage.removeItem("loginInfo");
+  redirect("/login");
 };

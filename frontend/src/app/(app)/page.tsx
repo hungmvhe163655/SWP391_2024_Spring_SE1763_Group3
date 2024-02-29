@@ -62,7 +62,6 @@ export default function Home() {
             alt="Image description"
             width={1280}
             height={720}
-            layout="responsive"
           />
         </div>
       </section>

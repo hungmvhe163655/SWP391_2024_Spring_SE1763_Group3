@@ -30,10 +30,7 @@ namespace BackendCore.Controllers
             var (isValid, message) = await _service.ValidateRegisterUser(tenantRegistration);
 
             if (!isValid)
-                return Unauthorized(new
-                {
-                    Message = message
-                });
+                return Unauthorized(message);
 
             var user = _mapper.Map<Tenant>(tenantRegistration);
 
@@ -65,10 +62,7 @@ namespace BackendCore.Controllers
             var (isValid, message, user) = await _service.ValidateUser(loginDTO);
 
             if (!isValid || user is null)
-                return Unauthorized(new
-                {
-                    Message = message
-                });
+                return Unauthorized(message);
 
             var userId = await _userManager.GetUserIdAsync(user);
             var userRoles = await _userManager.GetRolesAsync(user);
