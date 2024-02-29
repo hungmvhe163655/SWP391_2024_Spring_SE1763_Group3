@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using BackendCore.Services.InternalServices.Contracts;
-using BackendCore.Utils;
 using BackendCore.Utils.ActionFilters;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Shared.AuthenticationDTO;
-using System.ComponentModel.DataAnnotations;
-
 
 namespace BackendCore.Controllers
 {
@@ -31,7 +27,17 @@ namespace BackendCore.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Register([FromBody] TenantRegistrationDTO tenantRegistration)
         {
+            var (isValid, message) = await _service.ValidateRegisterUser(tenantRegistration);
+
+            if (!isValid)
+                return Unauthorized(new
+                {
+                    Message = message
+                });
+
             var user = _mapper.Map<Tenant>(tenantRegistration);
+
+            user.CreatedAt = DateTime.Now;
 
             var result = await _userManager.CreateAsync(user, tenantRegistration.Password);
 
@@ -48,7 +54,7 @@ namespace BackendCore.Controllers
 
             return StatusCode(201, new
             {
-                Token = await _service.CreateToken(true)
+                Message = "Register successfully!"
             });
         }
 

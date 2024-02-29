@@ -26,10 +26,11 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-
-const api = process.env.NEXT_PUBLIC_TENANT_API_URL;
+import { RegisterAccount } from "@/types/app";
+import { register } from "@/lib/actions/authenticate";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const formSchema = z
   .object({
@@ -38,18 +39,40 @@ const formSchema = z
     gender: z.enum(["male", "female"], {
       required_error: "You need to select a gender.",
     }),
+    roles: z.enum(["tenant", "home manager"], {
+      required_error: "You need to select a roles.",
+    }),
+    phoneNumber: z.string().min(3, { message: "Phone number is required" }),
     dob: z.date({
       required_error: "A date of birth is required.",
     }),
     password: z
       .string()
-      .min(8, { message: "Password must at least 4 characters" })
-      .max(255, { message: "Password must at max 255 characters" }),
+      .min(5, { message: "Password must at least 5 characters" })
+      .max(255, { message: "Password must at max 255 characters" })
+      .refine(
+        (value) => {
+          const regex = [];
+          // Include password requirements
+          regex.push(/(?=.*\d)/); // Require at least one digit
+          regex.push(/(?=.*[a-z])/); // Require at least one lowercase letter
+          regex.push(/(?=.*[A-Z])/); // Require at least one uppercase letter
+          regex.push(/(?=.*\W|_)/); // Require at least one non-alphanumeric character
+
+          // Check if the password meets all requirements
+          const valid = regex.every((r) => r.test(value));
+          return valid;
+        },
+        {
+          message:
+            "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character",
+        }
+      ),
     confirmPassword: z.string(),
   })
   .refine((fields) => fields.password === fields.confirmPassword, {
     path: ["confirmPassword"],
-    message: "Passwords don't match",
+    message: "Password doesn't match",
   });
 
 export function RegisterForm() {
@@ -64,76 +87,95 @@ export function RegisterForm() {
       email: "",
       password: "",
       confirmPassword: "",
+      phoneNumber: "",
     },
   });
 
-  function ErrorPopup(message: string) {
-    toast({
-      variant: "destructive",
-      title: "Uh oh! Something went wrong.",
-      description: message,
-      action: <ToastAction altText="Try again">Try again</ToastAction>,
-    });
-  }
-
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!api) {
-      ErrorPopup("Something went wrong!");
-      return;
-    }
-
-    var tenant = {
-      fullname: values.fullname,
-      password: values.password,
-      email: values.email,
-      dob: values.dob,
-      isMale: values.gender === "male",
-      roleId: 1,
-      portraitPictureUrl: "",
-      createdAt: new Date(),
-      roomId: null,
-    };
-    console.log(JSON.stringify(tenant));
-
     try {
-      const response = await fetch(api, {
-        headers: {
-          Accept: "application/json, text/plain",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-        method: "POST",
-        body: JSON.stringify(tenant),
-      });
+      var account: RegisterAccount = {
+        fullName: values.fullname,
+        password: values.password,
+        email: values.email,
+        userName: values.email,
+        phoneNumber: values.phoneNumber,
+        dob: values.dob,
+        isMale: values.gender === "male",
+        roles: [values.roles],
+        address: "",
+      };
+      console.log(JSON.stringify(account));
 
-      // Check if the response is successful
-      if (!response.ok) {
-        // Handle different error statuses
-        if (response.status === 400) {
-          throw new Error("Bad Request: Please check your input data.");
-        }
+      var data = await register(account);
 
-        throw new Error(
-          "Server Error: Something went wrong on the server side."
-        );
-      }
-
-      // Parse the response JSON
-      const data = await response.json();
       toast({
         variant: "success",
-        description: "Hello " + data.fullName,
+        description: data.message,
       });
-      router.push(`/tenants/${data.tenantid}`);
+
+      //router.push(`/tenants/${data.tenantid}`);
     } catch (error) {
       // Handle network errors and other exceptions
-      ErrorPopup((error as Error).message || "Something went wrong!");
+      toast({
+        variant: "destructive",
+        description: (error as Error).message || "Something went wrong!",
+      });
     }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {
+          // Email Field
+        }
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="Email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {
+          // Roles Field
+        }
+        <FormField
+          control={form.control}
+          name="roles"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>Roles</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-row space-x-2"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="tenant" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Tenant</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="home manager" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Home Manager</FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {
           // Full Name Field
         }
@@ -145,6 +187,28 @@ export function RegisterForm() {
               <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input type="fullname" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {
+          // Phone Number Field
+        }
+        <FormField
+          control={form.control}
+          name="phoneNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <PhoneInput
+                  {...field}
+                  specialLabel=""
+                  country={"vn"}
+                  enableSearch={true}
+                  countryCodeEditable={false}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -224,22 +288,6 @@ export function RegisterForm() {
                   />
                 </PopoverContent>
               </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {
-          // Email Field
-        }
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="Email" {...field} />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

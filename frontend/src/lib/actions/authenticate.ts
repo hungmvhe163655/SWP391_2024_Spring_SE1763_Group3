@@ -1,6 +1,11 @@
 "use sever";
 
-import { JwtCredential, LoginCredential } from "@/types/app";
+import {
+  JwtCredential,
+  LoginCredential,
+  RegisterAccount,
+  ResponseMessage,
+} from "@/types/app";
 import { fetchData } from "../utils/api";
 import { AUTHORIZATION_API } from "../constants";
 
@@ -16,6 +21,22 @@ export const authenticate = async ({
     });
 
     return jwtCredential;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const register = async (
+  registerAccount: RegisterAccount
+): Promise<ResponseMessage> => {
+  try {
+    const responseMessage: ResponseMessage = await fetchData({
+      api: AUTHORIZATION_API + "/register",
+      object: registerAccount,
+      method: "POST",
+    });
+
+    return responseMessage;
   } catch (error) {
     throw error;
   }

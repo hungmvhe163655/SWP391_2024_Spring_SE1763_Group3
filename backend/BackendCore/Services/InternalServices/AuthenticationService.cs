@@ -95,11 +95,9 @@ namespace BackendCore.Services.InternalServices
         private string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
@@ -159,5 +157,26 @@ namespace BackendCore.Services.InternalServices
             return tokenOptions;
         }
 
+        public async Task<(bool, string)> ValidateRegisterUser(RegistrationBaseDTO user)
+        {
+            try
+            {
+                _user = await _userManager.FindByEmailAsync(user.Email);
+
+                if (_user != null)
+                {
+                    _logger.LogWarn($"{nameof(ValidateUser)}: Email '{user.Email}' already exist.");
+                    return (false, $"Email '{user.Email}' already exist.");
+                }
+
+                return (true, "Validate successful.");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(ValidateUser)}: An error occurred while validating user '{user.Email}'. {ex.Message}");
+                throw; // Rethrow the exception for centralized exception handling
+            }
+        }
     }
 }

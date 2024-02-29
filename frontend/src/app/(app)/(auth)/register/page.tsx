@@ -2,8 +2,8 @@ import RegisterCard from "./RegisterCard";
 
 const Register = () => {
   return (
-    <main className="flex flex-col min-h-screen bg-slate-200">
-      <div className="mx-auto my-10">
+    <main className="flex flex-col h-fit bg-slate-200">
+      <div className="mx-auto my-4">
         <RegisterCard />
       </div>
     </main>

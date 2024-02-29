@@ -13,14 +13,18 @@ export interface JwtCredential {
   token: { accessToken: string; refreshToken: string };
 }
 
-export interface RegisterTenant {
+export interface RegisterAccount {
   fullName: string;
   userName: string;
   password: string;
-  isMale: true;
+  isMale: boolean;
   email: string;
   phoneNumber: string;
   roles: string[];
   dob: Date;
   address: string;
+}
+
+export interface ResponseMessage {
+  message: string;
 }
