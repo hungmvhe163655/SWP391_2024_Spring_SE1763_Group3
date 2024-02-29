@@ -30,3 +30,9 @@ export interface RegisterAccount {
 export interface ResponseMessage {
   message: string;
 }
+
+export interface AuthContextType {
+  loginInfo: LoginInfo | null;
+  login: (loginInfo: LoginInfo) => void;
+  logout: () => void;
+}

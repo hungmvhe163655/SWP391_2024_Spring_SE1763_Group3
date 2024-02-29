@@ -17,8 +17,10 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/input-password";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { LoginCredential } from "@/types/app";
+import { AuthContextType, LoginCredential } from "@/types/app";
 import { authenticate } from "@/lib/actions/authenticate";
+import { useContext } from "react";
+import AuthContext from "@/lib/contexts/auth-context";
 
 const formSchema = z.object({
   email: z
@@ -31,6 +33,7 @@ const formSchema = z.object({
 export const LoginForm: React.FC = () => {
   const { toast } = useToast();
   const router = useRouter();
+  const { login } = useContext(AuthContext) as AuthContextType;
 
   // 1. Define form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,6 +54,7 @@ export const LoginForm: React.FC = () => {
       };
 
       var user = await authenticate(loginCredential);
+      login(user);
 
       toast({
         variant: "success",

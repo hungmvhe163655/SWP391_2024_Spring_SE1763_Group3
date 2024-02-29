@@ -9,6 +9,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { AuthContextType } from "@/types/app";
+import AuthContext from "@/lib/contexts/auth-context";
 
 interface MenuItem {
   title: string;
@@ -22,11 +25,7 @@ const avatarMenus: MenuItem[] = [
 
 const NavAvatar: React.FC = () => {
   const router = useRouter();
-
-  const logout = () => {
-    localStorage.removeItem("loginInfo");
-    router.push("/login");
-  };
+  const { logout } = useContext(AuthContext) as AuthContextType;
 
   return (
     <DropdownMenu>
@@ -43,7 +42,14 @@ const NavAvatar: React.FC = () => {
           </DropdownMenuItem>
         ))}
         <DropdownMenuItem asChild>
-          <p onClick={() => logout()}>Log Out</p>
+          <p
+            onClick={() => {
+              logout();
+              router.push("/login");
+            }}
+          >
+            Log Out
+          </p>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { useAuth } from "@/lib/hooks/useAuth";
 import NavAvatar from "./main-nav-avatar";
+import AuthContext from "@/lib/contexts/auth-context";
+import { AuthContextType } from "@/types/app";
 
 interface MenuItem {
   title: string;
@@ -18,7 +19,7 @@ const menus: MenuItem[] = [
 
 const MainNavbar: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const auth = useAuth();
+  const { loginInfo } = useContext(AuthContext) as AuthContextType;
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
@@ -44,7 +45,7 @@ const MainNavbar: React.FC = () => {
           className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${isMenuOpen ? "block" : "hidden"}`}
         >
           <ul className="justify-end items-center space-y-8 md:flex md:space-x-6 md:space-y-0">
-            {auth ? (
+            {loginInfo ? (
               <NavAvatar />
             ) : (
               menus.map((item, idx) => (
