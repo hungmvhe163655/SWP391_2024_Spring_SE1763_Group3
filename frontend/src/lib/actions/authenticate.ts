@@ -7,6 +7,7 @@ import { AUTHORIZATION_API } from "../constants";
 export const authenticate = async ({
   email,
   password,
+  
 }: LoginCredential): Promise<JwtCredential> => {
   try {
     const jwtCredential: JwtCredential = await fetchData({

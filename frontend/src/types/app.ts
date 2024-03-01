@@ -5,10 +5,16 @@ export interface LoginCredential {
 
 export interface FetchDataOptions<T> {
   api: string | undefined;
-  object: T;
+  object?: T;
   method?: "GET" | "POST" | "PUT" | "DELETE";
 }
 
 export interface JwtCredential {
   token: { accessToken: string; refreshToken: string };
+}
+
+export interface News {
+  id : string;
+  title: string;
+  description: string;
 }
