@@ -1,24 +1,20 @@
 
+"use client"
+
+import { News } from "@/types/app";
 import { ColumnDef } from "@tanstack/react-table"
  
-export type Profiles = {
-  id: string
-  DateTime: Date
-  Title: string
-  Description : string
-}
-export const columns: ColumnDef<Profiles>[] = [
-
+export const columns: ColumnDef<News>[] = [
     {
-        accessorKey: "DateTime",
-        header: "Date Time",
+        accessorKey: "id",
+        header: "id",
     },
     {
-        accessorKey: "Title",
-        header: "Title",
+        accessorKey: "title",
+        header: "title",
     },
     {
-        accessorKey: "Description",
-        header: "Description",
+        accessorKey: "description",
+        header: "description",
     },
 ];

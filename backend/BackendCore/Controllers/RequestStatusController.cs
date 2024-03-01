@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BackendCore.Utils;
 using BackendCore.Utils.ActionFilters;
-using BackendCore.Utils.RepositoryExtensions;
 using BackendCore.Utils.RequestFeatures.EntityParameters;
 using BackendCore.Utils.RequestFeatures.Paging;
 using Entities.Exceptions;
@@ -120,7 +119,11 @@ namespace BackendCore.Controllers
             => await _context.RequestStatuses.FindAsync(id)
              ?? throw new RequestStatusNotFoundException(id);
 
-        
+        private IQueryable<RequestStatus> BuildQuery(IQueryable<RequestStatus> query,
+            RequestStatusParameter parameters)
+        {
+
+            return query;
+        }
     }
 }
-

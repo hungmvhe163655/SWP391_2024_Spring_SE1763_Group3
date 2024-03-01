@@ -5,7 +5,7 @@ export interface LoginCredential {
 
 export interface FetchDataOptions<T> {
   api: string | undefined;
-  object: T;
+  object?: T;
   method?: "GET" | "POST" | "PUT" | "DELETE";
 }
 
@@ -35,4 +35,9 @@ export interface AuthContextType {
   loginInfo: LoginInfo | null;
   login: (loginInfo: LoginInfo) => void;
   logout: () => void;
+}
+export interface News {
+  id: string;
+  title: string;
+  description: string;
 }
