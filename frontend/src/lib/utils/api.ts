@@ -1,10 +1,10 @@
 import { FetchDataOptions } from "@/types/app";
 
-export const fetchData = async <T, U>({
+export const fetchData = async ({
   api,
   object,
   method = "GET",
-}: FetchDataOptions<T>): Promise<U> => {
+}: FetchDataOptions) => {
   try {
     if (!api) {
       throw new Error("API not exist, try again later!");
@@ -26,7 +26,7 @@ export const fetchData = async <T, U>({
       );
     }
 
-    return await response.json();
+    return response.json();
   } catch (error) {
     throw error;
   }

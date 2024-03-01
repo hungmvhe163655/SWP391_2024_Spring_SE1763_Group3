@@ -3,9 +3,9 @@ export interface LoginCredential {
   password: string;
 }
 
-export interface FetchDataOptions<T> {
+export interface FetchDataOptions {
   api: string | undefined;
-  object?: T;
+  object?: object;
   method?: "GET" | "POST" | "PUT" | "DELETE";
 }
 
@@ -40,4 +40,19 @@ export interface News {
   id: string;
   title: string;
   description: string;
+}
+
+export interface Tenant {
+  id: string;
+  fullName: string;
+  phoneNumber: string;
+  isMale: boolean;
+  email: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+  portraitPictureUrl?: string;
+  dob: Date;
+  address?: string;
+  roomId?: string;
 }

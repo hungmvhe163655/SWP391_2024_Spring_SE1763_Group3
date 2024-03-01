@@ -54,6 +54,7 @@ export const LoginForm: React.FC = () => {
       };
 
       var user = await authenticate(loginCredential);
+      // Save to local
       login(user);
 
       toast({
