@@ -24,8 +24,8 @@ namespace Repositories.Configurations
                     Deposit = 3000000,
                     Note = "",
                     RoomId = Guid.Parse("4F2504E0-4F89-41D3-8A0C-0305E82C3303"),
-                    TenantId = Guid.Parse("B4E6EA80-F066-44F4-AA55-30E0A0FE30AF"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301")
+                    TenantId = "B4E6EA80-F066-44F4-AA55-30E0A0FE30AF",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301"
                 },
                 new Contract
                 {
@@ -40,8 +40,8 @@ namespace Repositories.Configurations
                     Deposit = 3000000,
                     Note = "",
                     RoomId = Guid.Parse("4F2504E0-4F89-41D3-7A0C-0305E82C3303"),
-                    TenantId = Guid.Parse("A1E1F042-AB4A-431E-8A8E-710E2ECEFFC3"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301")
+                    TenantId = "A1E1F042-AB4A-431E-8A8E-710E2ECEFFC3",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301"
                 },
                 new Contract
                 {
@@ -56,8 +56,8 @@ namespace Repositories.Configurations
                     Deposit = 3000000,
                     Note = "",
                     RoomId = Guid.Parse("CBF552C9-BBFB-4920-9F43-9782C33D88E8"),
-                    TenantId = Guid.Parse("4F9038F6-DCFD-40D4-96ED-601686DB6B11"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3301")
+                    TenantId = "4F9038F6-DCFD-40D4-96ED-601686DB6B11",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3301"
                 },
                 new Contract
                 {
@@ -72,8 +72,8 @@ namespace Repositories.Configurations
                     Deposit = 3000000,
                     Note = "",
                     RoomId = Guid.Parse("DB740CEC-F865-455B-874E-AA8E3436115F"),
-                    TenantId = Guid.Parse("86F1E1D1-5AB7-48D3-8B14-97B0AD42018E"),
-                    HomeManagerId = Guid.Parse("3F2504E0-4F89-41D3-9A0C-0305E82C3302")
+                    TenantId = "86F1E1D1-5AB7-48D3-8B14-97B0AD42018E",
+                    HomeManagerId = "3F2504E0-4F89-41D3-9A0C-0305E82C3302"
                 });
         }
     }

@@ -38,7 +38,7 @@ namespace Entities.Models
         public DateTime? DeletedAt { get; set; }
 
         // One Home Manager
-        public Guid HomeManagerId { get; set; }
+        public string HomeManagerId { get; set; } = null!;
         public virtual HomeManager HomeManager { get; set; } = null!;
 
         // Many Rooms

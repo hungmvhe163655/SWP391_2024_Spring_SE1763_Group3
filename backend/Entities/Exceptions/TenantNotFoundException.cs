@@ -4,7 +4,7 @@ namespace Entities.Exceptions
 {
     public sealed class TenantNotFoundException : NotFoundException
     {
-        public TenantNotFoundException(Guid newsId) :
+        public TenantNotFoundException(string newsId) :
             base($"The Tenant with id: {newsId} doesn't exist in the database.")
         {
         }

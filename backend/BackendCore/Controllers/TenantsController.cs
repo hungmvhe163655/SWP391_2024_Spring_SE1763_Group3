@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Azure;
 using BackendCore.Utils;
 using BackendCore.Utils.ActionFilters;
 using BackendCore.Utils.RepositoryExtensions;
+using BackendCore.Utils.RequestFeatures;
 using BackendCore.Utils.RequestFeatures.EntityParameters;
 using BackendCore.Utils.RequestFeatures.Paging;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +37,7 @@ namespace BackendCore.Controllers
             [FromQuery] TenantParameter tenantParameters)
         {
 
-            var queryTenant = BuildQuery(_context.Tenants.AsNoTracking(), 
+            var queryTenant = BuildQuery(_context.Tenants.AsNoTracking(),
                 tenantParameters);
 
             var pagedTenant = await PagedList<Tenant>.ToPagedListAsync(queryTenant,
@@ -48,8 +51,8 @@ namespace BackendCore.Controllers
             return Ok(tenantsDTO);
         }
 
-        [HttpGet("{id:guid}", Name = "TenantById")]
-        public async Task<IActionResult> GetTenant(Guid id)
+        [HttpGet("{id}", Name = "TenantById")]
+        public async Task<IActionResult> GetTenant(string id)
         {
             var tenant = await FindTenant(id);
 
@@ -73,9 +76,9 @@ namespace BackendCore.Controllers
             return CreatedAtRoute("TenantById", new { id = createdTenant.Id }, createdTenant);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateTenant(Guid id,
+        public async Task<IActionResult> UpdateTenant(string id,
             [FromBody] UpdateTenantDTO updateTenantDTO)
         {
             var tenant = await FindTenant(id);
@@ -86,8 +89,8 @@ namespace BackendCore.Controllers
             return Ok("Update successful!");
         }
 
-        [HttpPatch("{id:guid}")]
-        public async Task<IActionResult> PartiallyUpdateTenant(Guid id,
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PartiallyUpdateTenant(string id,
             [FromBody] JsonPatchDocument<UpdateTenantDTO> patchDoc)
         {
             if (patchDoc is null)
@@ -111,8 +114,8 @@ namespace BackendCore.Controllers
             return Ok("Partially update successful!");
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteTenant(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTenant(string id)
         {
             var deleteTenant = await FindTenant(id);
 
@@ -122,22 +125,24 @@ namespace BackendCore.Controllers
             return Ok("Delete successful!");
         }
 
-        [HttpGet("{id:guid}/notifications")]
-        public async Task<IActionResult> GetTenantNotifications(Guid id)
+        [HttpGet("{id}/notifications")]
+        public async Task<IActionResult> GetTenantNotifications(string id, [FromQuery] RequestParameters tenantParameters)
         {
             var tenant = await _context.Tenants
                 .Include(t => t.Notifications)
                 .FirstOrDefaultAsync(t => t.Id == id)
                 ?? throw new TenantNotFoundException(id);
 
+            var pagedNotifications = ChangeToPagedList(tenant.Notifications, tenantParameters);
+
             var notificationsDTO = _mapper
-                .Map<IEnumerable<ReadNotificationDTO>>(tenant.Notifications);
+                .Map<IEnumerable<ReadNotificationDTO>>(pagedNotifications);
 
             return Ok(notificationsDTO);
         }
 
-        [HttpGet("{id:guid}/requests")]
-        public async Task<IActionResult> GetTenantRequests(Guid id)
+        [HttpGet("{id}/requests")]
+        public async Task<IActionResult> GetTenantRequests(string id, [FromQuery] RequestParameters tenantParameters)
         {
             var tenant = await _context.Tenants
                 .SingleOrDefaultAsync(t => t.Id == id)
@@ -155,17 +160,20 @@ namespace BackendCore.Controllers
             foreach (var request in tenant.Requests)
                 await _context.Entry(request).Reference(r => r.HomeManager).LoadAsync();
 
+            var pagedRequests = ChangeToPagedList(tenant.Requests, tenantParameters);
+
             var requestsDTO = _mapper
-                .Map<IEnumerable<ReadRequestDTO>>(tenant.Requests);
+                .Map<IEnumerable<ReadRequestDTO>>(pagedRequests);
+
 
             return Ok(requestsDTO);
         }
 
-        private async Task<Tenant> FindTenant(Guid id)
+        private async Task<Tenant> FindTenant(string id)
             => await _context.Tenants.FindAsync(id)
              ?? throw new TenantNotFoundException(id);
 
-        private IQueryable<Tenant> BuildQuery(IQueryable<Tenant> query, 
+        private IQueryable<Tenant> BuildQuery(IQueryable<Tenant> query,
             TenantParameter parameters)
         {
             // Filter Gender
@@ -182,7 +190,7 @@ namespace BackendCore.Controllers
                     throw new DateRangeBadRequestException();
                 }
 
-                query = query.FilterCreatedDate(parameters.StartCreatedDate, 
+                query = query.FilterCreatedDate(parameters.StartCreatedDate,
                     parameters.EndCreatedDate);
             }
 
@@ -199,6 +207,22 @@ namespace BackendCore.Controllers
             }
 
             return query;
+        }
+
+        private PagedList<T> ChangeToPagedList<T>(ICollection<T> list, 
+            RequestParameters requestParameters)
+        {
+
+            requestParameters.OrderBy ??= "CreatedDate";
+
+            var pagedList = new PagedList<T>(list.ToList(), list.Count,
+                 requestParameters.PageNumber, requestParameters.PageSize);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(pagedList.MetaData));
+
+            return pagedList;
+
         }
     }
 }

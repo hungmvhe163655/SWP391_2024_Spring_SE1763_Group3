@@ -42,11 +42,11 @@ namespace Entities.Models
         public virtual Room Room { get; set; } = null!;
 
         // One Tenant
-        public Guid TenantId { get; set; }
+        public string TenantId { get; set; } = null!;
         public virtual Tenant Tenant { get; set; } = null!;
 
         // One Tenant
-        public Guid HomeManagerId { get; set; }
+        public string HomeManagerId { get; set; } = null!;
         public virtual HomeManager HomeManager { get; set; } = null!;
     }
 }

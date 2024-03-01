@@ -12,22 +12,22 @@ namespace Repositories.Configurations
                 new RequestStatus()
                 {
                     Id = 1,
-                    Status = "Chưa nhận",
+                    Status = "Sent",
                 },
                 new RequestStatus()
                 {
                     Id = 2,
-                    Status = "Đã nhận",
+                    Status = "Pending",
                 },
                 new RequestStatus()
                 {
                     Id = 3,
-                    Status = "Chấp nhận",
+                    Status = "Accepted",
                 },
                 new RequestStatus()
                 {
                     Id = 4,
-                    Status = "Từ chối",
+                    Status = "Rejected",
                 });
         }
     }
