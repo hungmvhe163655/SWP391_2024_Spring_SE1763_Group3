@@ -2,7 +2,6 @@
 
 import { NEWS_API } from "../constants";
 import { News } from "@/types/app";
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 export const getNews = async (): Promise<News[]> => {
   try {
