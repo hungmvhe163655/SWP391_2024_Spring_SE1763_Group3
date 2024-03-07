@@ -59,10 +59,10 @@ namespace HomeManagementBackend.Extensions
             services.AddIdentityCore<BuildingResident>(o =>
             {
                 o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
+                o.Password.RequireLowercase = true;
+                o.Password.RequireUppercase = true;
+                o.Password.RequireNonAlphanumeric = true;
+                o.Password.RequiredLength = 5;
 
                 o.User.RequireUniqueEmail = true;
             })
@@ -73,10 +73,10 @@ namespace HomeManagementBackend.Extensions
             services.AddIdentityCore<Tenant>(o =>
             {
                 o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
+                o.Password.RequireLowercase = true;
+                o.Password.RequireUppercase = true;
+                o.Password.RequireNonAlphanumeric = true;
+                o.Password.RequiredLength = 5;
 
                 o.User.RequireUniqueEmail = true;
             })
@@ -87,10 +87,10 @@ namespace HomeManagementBackend.Extensions
             services.AddIdentityCore<HomeManager>(o =>
             {
                 o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
+                o.Password.RequireLowercase = true;
+                o.Password.RequireUppercase = true;
+                o.Password.RequireNonAlphanumeric = true;
+                o.Password.RequiredLength = 5;
 
                 o.User.RequireUniqueEmail = true;
             })

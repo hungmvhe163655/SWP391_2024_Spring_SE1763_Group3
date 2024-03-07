@@ -7,7 +7,7 @@ namespace BackendCore.Utils.RequestFeatures.Paging
     {
         public MetaData MetaData { get; set; }
 
-        private PagedList(List<T> items, int count, int pageNumber, int pageSize)
+        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
             MetaData = new MetaData
             {

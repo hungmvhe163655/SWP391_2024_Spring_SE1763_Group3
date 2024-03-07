@@ -1,6 +1,6 @@
 ﻿namespace Shared.NewsDTO
 {
-    public class UpdateNewsDTO
+    public record UpdateNewsDTO : NewsBaseDTO
     {
 
         public DateTime UpdatedAt { get; set; }

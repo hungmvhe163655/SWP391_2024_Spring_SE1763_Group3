@@ -17,8 +17,10 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/input-password";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { LoginCredential } from "@/types/app";
+import { AuthContextType, LoginCredential } from "@/types/app";
 import { authenticate } from "@/lib/actions/authenticate";
+import { useContext } from "react";
+import AuthContext from "@/lib/contexts/auth-context";
 
 const formSchema = z.object({
   email: z
@@ -31,6 +33,7 @@ const formSchema = z.object({
 export const LoginForm: React.FC = () => {
   const { toast } = useToast();
   const router = useRouter();
+  const { login } = useContext(AuthContext) as AuthContextType;
 
   // 1. Define form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,14 +53,25 @@ export const LoginForm: React.FC = () => {
         password: values.password,
       };
 
-      var data = await authenticate(loginCredential);
+      var user = await authenticate(loginCredential);
+      login(user);
 
       toast({
         variant: "success",
-        description: "Hello " + data.token.accessToken,
+        description: "Login successfully!",
       });
 
-      //router.push(`/tenants/${data.tenantid}`);
+      if (user.userRoles.includes("Manager")) {
+        router.push(`/managers/${user.userId}`);
+      } else if (user.userRoles.includes("Tenant")) {
+        router.push(`/tenants/${user.userId}`);
+      } else {
+        // If roles is empty or "Admin"
+        toast({
+          variant: "destructive",
+          description: "You can't use this type of login!",
+        });
+      }
     } catch (error) {
       // Handle network errors and other exceptions
       toast({
@@ -106,7 +120,7 @@ export const LoginForm: React.FC = () => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <g clip-path="url(#clip0_17_40)">
+            <g clipPath="url(#clip0_17_40)">
               <path
                 d="M47.532 24.5528C47.532 22.9214 47.3997 21.2811 47.1175 19.6761H24.48V28.9181H37.4434C36.9055 31.8988 35.177 34.5356 32.6461 36.2111V42.2078H40.3801C44.9217 38.0278 47.532 31.8547 47.532 24.5528Z"
                 fill="#4285F4"

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { SearchInput } from "./ui/input-search";
+import NavAvatar from "./main-nav-avatar";
+import AuthContext from "@/lib/contexts/auth-context";
+import { AuthContextType } from "@/types/app";
 
 interface MenuItem {
   title: string;
@@ -11,14 +13,13 @@ interface MenuItem {
 }
 
 const menus: MenuItem[] = [
-  { title: "Home", path: "/" },
   { title: "Sign In", path: "/login" },
   { title: "Sign Up", path: "/register" },
-  { title: "Contact Us", path: "#" },
 ];
 
 const MainNavbar: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const { loginInfo } = useContext(AuthContext) as AuthContextType;
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
@@ -44,11 +45,15 @@ const MainNavbar: React.FC = () => {
           className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${isMenuOpen ? "block" : "hidden"}`}
         >
           <ul className="justify-end items-center space-y-8 md:flex md:space-x-6 md:space-y-0">
-            {menus.map((item, idx) => (
-              <li key={idx} className="text-gray-500 hover:text-gray-900">
-                <Link href={item.path}>{item.title}</Link>
-              </li>
-            ))}
+            {loginInfo ? (
+              <NavAvatar />
+            ) : (
+              menus.map((item, idx) => (
+                <li key={idx} className="text-gray-500 hover:text-gray-900">
+                  <Link href={item.path}>{item.title}</Link>
+                </li>
+              ))
+            )}
           </ul>
         </div>
       </div>

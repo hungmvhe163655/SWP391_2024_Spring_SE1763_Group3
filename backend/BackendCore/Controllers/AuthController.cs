@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using BackendCore.Services.InternalServices.Contracts;
-using BackendCore.Utils;
 using BackendCore.Utils.ActionFilters;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Shared.AuthenticationDTO;
-using System.ComponentModel.DataAnnotations;
-
 
 namespace BackendCore.Controllers
 {
@@ -17,10 +13,10 @@ namespace BackendCore.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly UserManager<Tenant> _userManager;
+        private readonly UserManager<BuildingResident> _userManager;
         private readonly IAuthenticationService _service;
 
-        public AuthController(IMapper mapper, UserManager<Tenant> userManager, IAuthenticationService service)
+        public AuthController(IMapper mapper, UserManager<BuildingResident> userManager, IAuthenticationService service)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -31,7 +27,14 @@ namespace BackendCore.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Register([FromBody] TenantRegistrationDTO tenantRegistration)
         {
+            var (isValid, message) = await _service.ValidateRegisterUser(tenantRegistration);
+
+            if (!isValid)
+                return Unauthorized(message);
+
             var user = _mapper.Map<Tenant>(tenantRegistration);
+
+            user.CreatedAt = DateTime.Now;
 
             var result = await _userManager.CreateAsync(user, tenantRegistration.Password);
 
@@ -48,24 +51,26 @@ namespace BackendCore.Controllers
 
             return StatusCode(201, new
             {
-                Token = await _service.CreateToken(true)
+                Message = "Register successfully!"
             });
         }
 
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Authenticate([FromBody] LoginDTO user)
+        public async Task<IActionResult> Authenticate([FromBody] LoginDTO loginDTO)
         {
-            var (isValid, message) = await _service.ValidateUser(user);
+            var (isValid, message, user) = await _service.ValidateUser(loginDTO);
 
-            if (!isValid)
-                return Unauthorized(new
-                {
-                    Message = message
-                });
+            if (!isValid || user is null)
+                return Unauthorized(message);
+
+            var userId = await _userManager.GetUserIdAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
 
             return Ok(new
             {
+                UserId = userId,
+                UserRoles = userRoles,
                 Token = await _service.CreateToken(true)
             });
         }

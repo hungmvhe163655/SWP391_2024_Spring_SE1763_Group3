@@ -5,10 +5,39 @@ export interface LoginCredential {
 
 export interface FetchDataOptions<T> {
   api: string | undefined;
-  object: T;
+  object?: T;
   method?: "GET" | "POST" | "PUT" | "DELETE";
 }
 
-export interface JwtCredential {
+export interface LoginInfo {
+  userId: string;
+  userRoles: string[];
   token: { accessToken: string; refreshToken: string };
+}
+
+export interface RegisterAccount {
+  fullName: string;
+  userName: string;
+  password: string;
+  isMale: boolean;
+  email: string;
+  phoneNumber: string;
+  roles: string[];
+  dob: Date;
+  address: string;
+}
+
+export interface ResponseMessage {
+  message: string;
+}
+
+export interface AuthContextType {
+  loginInfo: LoginInfo | null;
+  login: (loginInfo: LoginInfo) => void;
+  logout: () => void;
+}
+export interface News {
+  id: string;
+  title: string;
+  description: string;
 }

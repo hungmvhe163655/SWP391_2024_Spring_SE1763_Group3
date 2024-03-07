@@ -2,18 +2,21 @@
 {
     public record ReadTenantDTO
     (
-        Guid Id,
+        string Id,
         string FullName,
+        string UserName,
         string PhoneNumber,
-        string Password,
+        bool PhoneNumberConfirmed,
+        string PasswordHash,
         bool IsMale,
         string Email,
         DateTime CreatedAt,
         DateTime? UpdatedAt,
         bool IsDeleted,
         DateTime? DeletedAt,
+        bool EmailConfirmed,
+        int AccessFailedCount,
         string PortraitPictureUrl,
-        int RoleId,
         DateTime Dob,
         string Address,
         Guid? RoomId

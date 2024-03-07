@@ -22,10 +22,7 @@ namespace Entities.Models
         public string Status { get; set; } = null!;
 
         // Many Requests
-        public virtual ICollection<Contract> Contracts { get; set; } = null!;
         public virtual ICollection<Request> Requests { get; set; } = null!;
-        public virtual ICollection<Notification> Notifications { get; set; } = null!;
-
     }
 }
 
